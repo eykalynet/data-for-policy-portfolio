@@ -64,6 +64,11 @@ Rows with true `NA`, blank, or literal `"NA"` values in key school fields are re
 
 Discrepancy checks compare summed category or proficiency counts against assessed counts. These checks are saved in `outputs/tables/`.
 
+Manual audit files are saved in `processed/`:
+
+- `manual_audit_records.csv`
+- `manual_audit_summary.csv`
+
 ## Codebook
 
 The final merged dataset codebook is saved in:

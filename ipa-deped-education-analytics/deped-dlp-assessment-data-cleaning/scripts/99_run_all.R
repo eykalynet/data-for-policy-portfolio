@@ -9,6 +9,8 @@ source("scripts/04_clean_rma.R")
 source("scripts/05_merge_rma_to_dlp.R")
 source("scripts/06_create_scores_and_checks.R")
 source("scripts/07_create_graphs.R")
+source("scripts/08_create_codebook.R")
+source("scripts/09_create_manual_audit_files.R")
 
 run_complete_log <- tibble(
   workflow_step = c(
@@ -19,11 +21,12 @@ run_complete_log <- tibble(
     "clean_rma",
     "merge_rma_to_dlp",
     "create_scores_and_checks",
-    "create_graphs"
+    "create_graphs",
+    "create_codebook",
+    "create_manual_audit_files"
   ),
   status = "completed",
   completed_at = as.character(Sys.time())
 )
 
 write_csv(run_complete_log, file.path(logs_dir, "run_all_completed.csv"))
-
