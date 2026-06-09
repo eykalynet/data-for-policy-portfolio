@@ -9,6 +9,11 @@ philiri_level_distribution_summary <- read_csv(file.path(tables_dir, "philiri_le
 philiri_discrepancy_summary <- read_csv(file.path(tables_dir, "philiri_discrepancy_summary.csv"), show_col_types = FALSE)
 rma_distribution_summary <- read_csv(file.path(tables_dir, "rma_proficiency_distribution_summary.csv"), show_col_types = FALSE)
 rma_discrepancy_summary <- read_csv(file.path(tables_dir, "rma_discrepancy_summary.csv"), show_col_types = FALSE)
+dlp_clean <- read_rds(file.path(processed_dir, "dlp_randomization_clean.rds"))
+philiri_scores_long <- read_csv(file.path(tables_dir, "philiri_school_level_scores_long.csv"), show_col_types = FALSE)
+philiri_discrepancy_checks <- read_csv(file.path(tables_dir, "philiri_school_level_discrepancy_checks.csv"), show_col_types = FALSE)
+rma_scores_long <- read_csv(file.path(tables_dir, "rma_school_level_scores_long.csv"), show_col_types = FALSE)
+rma_discrepancy_checks <- read_csv(file.path(tables_dir, "rma_school_level_discrepancy_checks.csv"), show_col_types = FALSE)
 
 merge_graph_data <- all_merge_diagnostics |>
   select(dataset, matched_records, unmatched_records_from_dlp, unmatched_records_from_assessment) |>
@@ -190,3 +195,142 @@ rma_distribution_line_graph <- rma_distribution_line_data |>
   theme(axis.text.x = element_text(angle = 20, hjust = 1))
 
 ggsave(file.path(figures_dir, "rma_proficiency_start_end_sy_lines_faceted.png"), rma_distribution_line_graph, width = 10, height = 6, dpi = 300)
+
+# Graphs by DLP rev_status.
+rev_status_lookup <- dlp_clean |>
+  transmute(
+    school_id = as.character(beis_school_id),
+    rev_status = as.character(rev_status),
+    rev_status_label = case_when(
+      is.na(rev_status) ~ "missing rev_status",
+      TRUE ~ paste("rev_status", rev_status)
+    )
+  )
+
+philiri_rev_status_summary <- philiri_scores_long |>
+  mutate(school_id = as.character(school_id)) |>
+  left_join(rev_status_lookup, by = "school_id") |>
+  filter(is_in_dlp_randomization_file, !is.na(rev_status)) |>
+  group_by(rev_status_label, time_point, grade, level_group, reading_category) |>
+  summarise(
+    total_student_count = sum(student_count, na.rm = TRUE),
+    total_english_assessed = sum(english_assessed, na.rm = TRUE),
+    schools_with_data = n_distinct(school_id),
+    .groups = "drop"
+  ) |>
+  mutate(
+    percent_of_english_assessed = case_when(
+      total_english_assessed > 0 ~ 100 * total_student_count / total_english_assessed,
+      TRUE ~ NA_real_
+    ),
+    school_year_point = case_when(
+      time_point == "BoSY" ~ "Start of SY",
+      time_point == "EoSY" ~ "End of SY",
+      TRUE ~ time_point
+    ),
+    school_year_point = factor(school_year_point, levels = c("Start of SY", "End of SY")),
+    grade = factor(grade, levels = c("Grade 7", "Grade 8", "Grade 9", "Grade 10")),
+    level_group = factor(level_group, levels = c("2-level", "3-level"))
+  )
+
+write_csv(philiri_rev_status_summary, file.path(tables_dir, "philiri_distribution_by_rev_status_summary.csv"))
+
+philiri_rev_status_line_graph <- philiri_rev_status_summary |>
+  ggplot(aes(x = school_year_point, y = percent_of_english_assessed, group = reading_category, color = reading_category)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_grid(rev_status_label + level_group ~ grade) +
+  labs(x = NULL, y = "Percent of English assessed", color = NULL, title = "Phil-IRI Reading Categories by Rev Status") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+ggsave(file.path(figures_dir, "philiri_reading_categories_by_rev_status_lines_faceted.png"), philiri_rev_status_line_graph, width = 12, height = 8, dpi = 300)
+
+philiri_discrepancy_by_rev_status <- philiri_discrepancy_checks |>
+  mutate(school_id = as.character(school_id)) |>
+  left_join(rev_status_lookup, by = "school_id") |>
+  filter(is_in_dlp_randomization_file, !is.na(rev_status)) |>
+  group_by(rev_status_label, time_point, grade, level_group) |>
+  summarise(
+    schools_checked = n(),
+    schools_with_discrepancy = sum(has_discrepancy, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    grade = factor(grade, levels = c("Grade 7", "Grade 8", "Grade 9", "Grade 10")),
+    level_group = factor(level_group, levels = c("2-level", "3-level"))
+  )
+
+write_csv(philiri_discrepancy_by_rev_status, file.path(tables_dir, "philiri_discrepancy_by_rev_status_summary.csv"))
+
+philiri_discrepancy_by_rev_status_graph <- philiri_discrepancy_by_rev_status |>
+  ggplot(aes(x = grade, y = schools_with_discrepancy, fill = rev_status_label)) +
+  geom_col(position = "dodge") +
+  facet_grid(level_group ~ time_point) +
+  labs(x = NULL, y = "Schools with discrepancies", fill = NULL, title = "Phil-IRI Discrepancy Flags by Rev Status") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+ggsave(file.path(figures_dir, "philiri_discrepancy_flags_by_rev_status.png"), philiri_discrepancy_by_rev_status_graph, width = 10, height = 6, dpi = 300)
+
+rma_rev_status_summary <- rma_scores_long |>
+  mutate(school_id = as.character(school_id)) |>
+  left_join(rev_status_lookup, by = "school_id") |>
+  filter(is_in_dlp_randomization_file, !is.na(rev_status)) |>
+  group_by(rev_status_label, time_point, grade, proficiency_group) |>
+  summarise(
+    total_student_count = sum(student_count, na.rm = TRUE),
+    total_assessed_count = sum(assessed_count, na.rm = TRUE),
+    schools_with_data = n_distinct(school_id),
+    .groups = "drop"
+  ) |>
+  mutate(
+    percent_of_assessed = case_when(
+      total_assessed_count > 0 ~ 100 * total_student_count / total_assessed_count,
+      TRUE ~ NA_real_
+    ),
+    school_year_point = case_when(
+      time_point == "BoSY" ~ "Start of SY",
+      time_point == "EoSY" ~ "End of SY",
+      TRUE ~ time_point
+    ),
+    school_year_point = factor(school_year_point, levels = c("Start of SY", "End of SY")),
+    grade = factor(grade, levels = c("Grade 7", "Grade 8", "Grade 9", "Grade 10"))
+  )
+
+write_csv(rma_rev_status_summary, file.path(tables_dir, "rma_distribution_by_rev_status_summary.csv"))
+
+rma_rev_status_line_graph <- rma_rev_status_summary |>
+  ggplot(aes(x = school_year_point, y = percent_of_assessed, group = proficiency_group, color = proficiency_group)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_grid(rev_status_label ~ grade) +
+  labs(x = NULL, y = "Percent of assessed", color = NULL, title = "RMA Proficiency Groups by Rev Status") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+ggsave(file.path(figures_dir, "rma_proficiency_by_rev_status_lines_faceted.png"), rma_rev_status_line_graph, width = 12, height = 6, dpi = 300)
+
+rma_discrepancy_by_rev_status <- rma_discrepancy_checks |>
+  mutate(school_id = as.character(school_id)) |>
+  left_join(rev_status_lookup, by = "school_id") |>
+  filter(is_in_dlp_randomization_file, !is.na(rev_status)) |>
+  group_by(rev_status_label, time_point, grade) |>
+  summarise(
+    schools_checked = n(),
+    schools_with_discrepancy = sum(has_discrepancy, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(grade = factor(grade, levels = c("Grade 7", "Grade 8", "Grade 9", "Grade 10")))
+
+write_csv(rma_discrepancy_by_rev_status, file.path(tables_dir, "rma_discrepancy_by_rev_status_summary.csv"))
+
+rma_discrepancy_by_rev_status_graph <- rma_discrepancy_by_rev_status |>
+  ggplot(aes(x = grade, y = schools_with_discrepancy, fill = rev_status_label)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ time_point) +
+  labs(x = NULL, y = "Schools with discrepancies", fill = NULL, title = "RMA Discrepancy Flags by Rev Status") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+ggsave(file.path(figures_dir, "rma_discrepancy_flags_by_rev_status.png"), rma_discrepancy_by_rev_status_graph, width = 10, height = 5, dpi = 300)

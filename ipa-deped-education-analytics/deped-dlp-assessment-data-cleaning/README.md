@@ -104,6 +104,10 @@ The graph script saves PNG files in `outputs/figures/`, including:
 - `philiri_assessed_start_end_sy_lines.png`
 - `philiri_reading_categories_start_end_sy_lines_faceted.png`
 - `rma_proficiency_start_end_sy_lines_faceted.png`
+- `philiri_reading_categories_by_rev_status_lines_faceted.png`
+- `philiri_discrepancy_flags_by_rev_status.png`
+- `rma_proficiency_by_rev_status_lines_faceted.png`
+- `rma_discrepancy_flags_by_rev_status.png`
 
 ## How to Run in RStudio
 
