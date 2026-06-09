@@ -202,6 +202,8 @@ rev_status_lookup <- dlp_clean |>
     school_id = as.character(beis_school_id),
     rev_status = as.character(rev_status),
     rev_status_label = case_when(
+      rev_status == "0" ~ "control",
+      rev_status == "1" ~ "treatment",
       is.na(rev_status) ~ "missing rev_status",
       TRUE ~ paste("rev_status", rev_status)
     )
@@ -310,6 +312,65 @@ rma_rev_status_line_graph <- rma_rev_status_summary |>
   theme(axis.text.x = element_text(angle = 20, hjust = 1))
 
 ggsave(file.path(figures_dir, "rma_proficiency_by_rev_status_lines_faceted.png"), rma_rev_status_line_graph, width = 12, height = 6, dpi = 300)
+
+rma_rev_status_stacked_bar_graph <- rma_rev_status_summary |>
+  mutate(
+    proficiency_group = factor(
+      proficiency_group,
+      levels = c(
+        "not proficient",
+        "low proficient",
+        "nearly proficient",
+        "proficient",
+        "high proficient"
+      )
+    )
+  ) |>
+  ggplot(aes(x = school_year_point, y = percent_of_assessed, fill = proficiency_group)) +
+  geom_col(width = 0.7) +
+  facet_grid(rev_status_label ~ grade) +
+  labs(x = NULL, y = "Percent of assessed", fill = NULL, title = "RMA Proficiency Distribution by Rev Status") +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+ggsave(file.path(figures_dir, "rma_proficiency_by_rev_status_stacked_bars.png"), rma_rev_status_stacked_bar_graph, width = 12, height = 6, dpi = 300)
+
+rma_rev_status_change_data <- rma_rev_status_summary |>
+  select(rev_status_label, grade, proficiency_group, school_year_point, percent_of_assessed) |>
+  pivot_wider(
+    names_from = school_year_point,
+    values_from = percent_of_assessed
+  ) |>
+  mutate(
+    percentage_point_change = `End of SY` - `Start of SY`,
+    proficiency_group = factor(
+      proficiency_group,
+      levels = c(
+        "not proficient",
+        "low proficient",
+        "nearly proficient",
+        "proficient",
+        "high proficient"
+      )
+    )
+  )
+
+write_csv(rma_rev_status_change_data, file.path(tables_dir, "rma_change_by_rev_status_summary.csv"))
+
+rma_rev_status_change_graph <- rma_rev_status_change_data |>
+  ggplot(aes(x = percentage_point_change, y = proficiency_group, color = rev_status_label)) +
+  geom_vline(xintercept = 0, color = "gray70", linewidth = 0.5) +
+  geom_point(size = 2.5, position = position_dodge(width = 0.45)) +
+  facet_wrap(~ grade) +
+  labs(
+    x = "Percentage-point change from start to end of SY",
+    y = NULL,
+    color = NULL,
+    title = "RMA Proficiency Change by Rev Status"
+  ) +
+  theme_minimal(base_size = 11)
+
+ggsave(file.path(figures_dir, "rma_proficiency_change_by_rev_status_points.png"), rma_rev_status_change_graph, width = 10, height = 6, dpi = 300)
 
 rma_discrepancy_by_rev_status <- rma_discrepancy_checks |>
   mutate(school_id = as.character(school_id)) |>
