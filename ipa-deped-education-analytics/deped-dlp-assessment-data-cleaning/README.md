@@ -68,6 +68,21 @@ Discrepancy checks compare summed category or proficiency counts against assesse
 
 The graph script saves PNG files in `outputs/figures/`, including:
 
+- `merge_diagnostics.png`
+- `philiri_assessed_by_grade_bosy.png`
+- `philiri_assessed_by_grade_eosy.png`
+- `philiri_2level_distribution_bosy.png`
+- `philiri_2level_distribution_eosy.png`
+- `philiri_3level_distribution_bosy.png`
+- `philiri_3level_distribution_eosy.png`
+- `philiri_discrepancy_flags.png`
+- `rma_proficiency_distribution_bosy.png`
+- `rma_proficiency_distribution_eosy.png`
+- `rma_discrepancy_flags.png`
+- `philiri_assessed_start_end_sy_lines.png`
+- `philiri_reading_categories_start_end_sy_lines_faceted.png`
+- `rma_proficiency_start_end_sy_lines_faceted.png`
+
 ## How to Run in RStudio
 
 1.  Open `deped-dlp-assessment-data-cleaning.Rproj` in RStudio.
