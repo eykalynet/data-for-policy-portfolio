@@ -54,7 +54,7 @@ The DLP randomization file is the base school-level dataset. The main merge key 
 
 ## Score Creation Workflow
 
-Phil-IRI score tables calculate Grade 7 to Grade 10 English reading category percentages against English assessed counts. The BoSY, or beginning-of-school-year, file uses 2-level and 3-level reading category columns. The EoSY, or end-of-school-year, file does not include 2-level or 3-level suffixes, so those counts are saved under both labels for consistency across outputs.
+Phil-IRI score tables calculate Grade 7 to Grade 10 English reading category percentages against English assessed counts. The BoSY, or beginning-of-school-year, file uses 2-level and 3-level reading category columns. The EoSY, or end-of-school-year, file does not include 2-level or 3-level suffixes, so those counts are saved under both labels for consistency across outputs. Based on project guidance, EoSY `frustration` and `instructional` are treated as comparable to the below-grade reading level categories, while EoSY `independent` is treated as comparable to BoSY `grade_ready`.
 
 RMA score tables calculate Grade 7 to Grade 10 percentages for the not proficient, low proficient, nearly proficient, proficient, and high proficient groups.
 
