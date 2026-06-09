@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# R and RStudio local state
+.Rhistory
+.RData
+.Ruserdata/
+.Rproj.user/
+
+# Environment files
+.Renviron
+
+# Raw/internal data
+ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/raw/
+
+# Temporary files
+*.tmp
+*.log
