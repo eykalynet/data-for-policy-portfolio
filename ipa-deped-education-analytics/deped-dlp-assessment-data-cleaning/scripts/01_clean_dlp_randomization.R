@@ -9,14 +9,14 @@ dlp_eval_file <- file.path(raw_dir, "DLP_randomized_schools_eval.csv")
 dlp_raw <- read_csv(
   dlp_file,
   col_types = cols(.default = col_character()),
-  na = c("", "NA", "N/A", "na", "n/a")
+  na = c("", "NA", "N/A", "na", "n/a", "null", "NULL")
 ) |>
   clean_names()
 
 dlp_eval_raw <- read_csv(
   dlp_eval_file,
   col_types = cols(.default = col_character()),
-  na = c("", "NA", "N/A", "na", "n/a")
+  na = c("", "NA", "N/A", "na", "n/a", "null", "NULL")
 ) |>
   clean_names()
 
@@ -110,4 +110,3 @@ write_csv(dlp_main, file.path(processed_dir, "dlp_randomization_clean.csv"))
 write_csv(dlp_na_schools, file.path(validation_na_dir, "dlp_rows_missing_key_school_fields.csv"))
 write_csv(dlp_clean_summary, file.path(tables_dir, "dlp_cleaning_summary.csv"))
 write_csv(dlp_duplicate_school_ids, file.path(tables_dir, "dlp_duplicate_beis_school_ids.csv"))
-
