@@ -238,22 +238,17 @@ final_percentage_dataset <- school_base %>%
   left_join(rma_discrepancy_flag_wide, by = c("beis_school_id" = "school_id"))
 
 final_percentage_codebook <- tibble(
-  variable_name = names(final_percentage_dataset)
+  variable_name = names(final_percentage_dataset),
+  r_class = map_chr(final_percentage_dataset, ~ class(.x)[1])
 ) %>%
   mutate(
-    variable_type = case_when(
+    source_dataset = case_when(
       variable_name %in% c("beis_school_id", "randomized_eval_id", "rev_status") ~ "school identifier or evaluation metadata",
-      str_detect(variable_name, "^philiri_.*_pct_eng_assessed$") ~ "Phil-IRI percentage score",
-      str_detect(variable_name, "^philiri_.*_eng_assessed$") ~ "Phil-IRI denominator",
-      str_detect(variable_name, "^philiri_.*_summed_category_count$") ~ "Phil-IRI summed category count",
-      str_detect(variable_name, "^philiri_.*_discrepancy_count$") ~ "Phil-IRI discrepancy count",
-      str_detect(variable_name, "^philiri_.*_has_discrepancy$") ~ "Phil-IRI discrepancy flag",
-      str_detect(variable_name, "^rma_.*_pct_assessed$") ~ "RMA percentage score",
-      str_detect(variable_name, "^rma_.*_assessed$") ~ "RMA denominator",
-      str_detect(variable_name, "^rma_.*_summed_proficiency_count$") ~ "RMA summed proficiency count",
-      str_detect(variable_name, "^rma_.*_discrepancy_count$") ~ "RMA discrepancy count",
-      str_detect(variable_name, "^rma_.*_has_discrepancy$") ~ "RMA discrepancy flag",
-      TRUE ~ "other"
+      str_starts(variable_name, "philiri_bosy_") ~ "Phil-IRI BoSY derived score/check",
+      str_starts(variable_name, "philiri_eosy_") ~ "Phil-IRI EoSY derived score/check",
+      str_starts(variable_name, "rma_bosy_") ~ "RMA BoSY derived score/check",
+      str_starts(variable_name, "rma_eosy_") ~ "RMA EoSY derived score/check",
+      TRUE ~ "final derived dataset"
     ),
     description = case_when(
       variable_name == "beis_school_id" ~ "BEIS school ID. Main school-level merge key from the DLP school dataset.",
@@ -271,7 +266,8 @@ final_percentage_codebook <- tibble(
       str_detect(variable_name, "^rma_.*_has_discrepancy$") ~ "TRUE when summed RMA proficiency count does not equal assessed count.",
       TRUE ~ "Variable included for identifying or documenting the school-level record."
     )
-  )
+  ) %>%
+  select(variable_name, source_dataset, r_class, description)
 
 write_csv(final_percentage_dataset, file.path(processed_dir, "final_school_percentage_dataset.csv"), quote = "all")
 write_rds(final_percentage_dataset, file.path(processed_dir, "final_school_percentage_dataset.rds"))
