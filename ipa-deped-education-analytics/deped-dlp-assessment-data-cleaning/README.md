@@ -58,6 +58,14 @@ Phil-IRI score tables calculate Grade 7 to Grade 10 English reading category per
 
 RMA score tables calculate Grade 7 to Grade 10 percentages for the not proficient, low proficient, nearly proficient, proficient, and high proficient groups.
 
+The compact final percentage dataset is saved in:
+
+- `processed/final_school_percentage_dataset.csv`
+- `processed/final_school_percentage_dataset.rds`
+- `processed/final_school_percentage_dataset_codebook.csv`
+
+This file keeps only DLP school IDs/evaluation metadata plus the relevant Phil-IRI and RMA percentage variables, denominators, summed category/proficiency counts, and discrepancy checks.
+
 ## Validation and Discrepancy Checks
 
 Rows with true `NA`, blank, or literal `"NA"` values in key school fields are removed from the main files and saved in `outputs/validation_na_schools/`.
