@@ -86,7 +86,7 @@ codebook <- tibble(
       variable_name == "modified_coc" ~ "Modified curriculum or class organization classification from the DLP randomization file.",
       variable_name == "school_type" ~ "School type from the DLP randomization file.",
       variable_name == "randomized_eval_id" ~ "School ID from the DLP randomized schools evaluation file, joined by BEIS school ID.",
-      variable_name == "rev_status" ~ "Review or revision status from the DLP randomized schools evaluation file.",
+      variable_name == "rev_status" ~ "Randomization evaluation status from the DLP randomized schools evaluation file. This indicates whether the school is in the control group or not.",
       str_detect(variable_name, "^enroll_g(7|8|9|10)_[mf]$") ~ paste0("DLP enrollment count for ", grade_level, ", ", str_to_lower(sex), " students."),
       str_detect(variable_name, "^enroll_sn_ed_ngjhs_[mf]$") ~ paste0("DLP enrollment count for SNEd non-graded junior high school, ", str_to_lower(sex), " students."),
       variable_name == "enroll_total_jhs_m" ~ "Total DLP junior high school enrollment count for male students.",

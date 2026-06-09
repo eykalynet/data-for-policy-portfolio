@@ -1,7 +1,7 @@
 "variable_name","variable_type","description"
 "beis_school_id","school identifier or evaluation metadata","BEIS school ID. Main school-level merge key from the DLP school dataset."
 "randomized_eval_id","school identifier or evaluation metadata","Evaluation ID from the DLP randomized schools evaluation file."
-"rev_status","school identifier or evaluation metadata","Review or revision status from the DLP randomized schools evaluation file."
+"rev_status","school identifier or evaluation metadata","Randomization evaluation status from the DLP randomized schools evaluation file. This indicates whether the school is in the control group or not."
 "philiri_bosy_grade_7_2level_frustration_pct_eng_assessed","Phil-IRI percentage score","Phil-IRI percentage score against English assessed count. EoSY independent is treated as comparable to BoSY grade_ready based on project guidance."
 "philiri_bosy_grade_7_2level_instructional_pct_eng_assessed","Phil-IRI percentage score","Phil-IRI percentage score against English assessed count. EoSY independent is treated as comparable to BoSY grade_ready based on project guidance."
 "philiri_bosy_grade_7_2level_independent_pct_eng_assessed","Phil-IRI percentage score","Phil-IRI percentage score against English assessed count. EoSY independent is treated as comparable to BoSY grade_ready based on project guidance."

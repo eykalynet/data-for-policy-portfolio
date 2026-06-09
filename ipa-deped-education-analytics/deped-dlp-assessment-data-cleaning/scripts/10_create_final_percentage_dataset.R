@@ -258,7 +258,7 @@ final_percentage_codebook <- tibble(
     description = case_when(
       variable_name == "beis_school_id" ~ "BEIS school ID. Main school-level merge key from the DLP school dataset.",
       variable_name == "randomized_eval_id" ~ "Evaluation ID from the DLP randomized schools evaluation file.",
-      variable_name == "rev_status" ~ "Review or revision status from the DLP randomized schools evaluation file.",
+      variable_name == "rev_status" ~ "Randomization evaluation status from the DLP randomized schools evaluation file. This indicates whether the school is in the control group or not.",
       str_detect(variable_name, "^philiri_.*_pct_eng_assessed$") ~ "Phil-IRI percentage score against English assessed count. EoSY independent is treated as comparable to BoSY grade_ready based on project guidance.",
       str_detect(variable_name, "^philiri_.*_eng_assessed$") ~ "Phil-IRI English assessed count used as denominator for the percentage and comparison checks.",
       str_detect(variable_name, "^philiri_.*_summed_category_count$") ~ "Sum of Phil-IRI category counts for the school, grade, time point, and 2-level or 3-level grouping.",

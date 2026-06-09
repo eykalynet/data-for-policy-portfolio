@@ -12,7 +12,7 @@
 
 The main DLP base file is `Final_DLP_Dataset_for_Randomization.csv`.
 
-The smaller file `DLP_randomized_schools_eval.csv` is read and joined by `beis_school_id` to bring in `randomized_eval_id` and `rev_status` when available.
+The smaller file `DLP_randomized_schools_eval.csv` is read and joined by `beis_school_id` to bring in `randomized_eval_id` and `rev_status` when available. The `rev_status` field indicates whether the school is in the control group or not.
 
 Rows are dropped from the main DLP analytic file when any of these key fields are missing:
 

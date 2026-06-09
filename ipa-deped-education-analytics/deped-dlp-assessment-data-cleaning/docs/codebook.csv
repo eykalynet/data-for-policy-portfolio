@@ -59,7 +59,7 @@ pilot_cancel,DLP randomization,Final_DLP_Dataset_for_Randomization.csv,pilot can
 pilot_ratio,DLP randomization,Final_DLP_Dataset_for_Randomization.csv,pilot cancellation variables,numeric,numeric,Pilot cancellation ratio from the DLP randomization file.
 pilot_shift,DLP randomization,Final_DLP_Dataset_for_Randomization.csv,pilot cancellation variables,numeric,numeric,Pilot shift measure from the DLP randomization file.
 randomized_eval_id,DLP randomized schools eval,DLP_randomized_schools_eval.csv,randomization evaluation metadata,school id or code,character,"School ID from the DLP randomized schools evaluation file, joined by BEIS school ID."
-rev_status,DLP randomized schools eval,DLP_randomized_schools_eval.csv,randomization evaluation metadata,categorical,factor,Review or revision status from the DLP randomized schools evaluation file.
+rev_status,DLP randomized schools eval,DLP_randomized_schools_eval.csv,randomization evaluation metadata,categorical,factor,Randomization evaluation status from the DLP randomized schools evaluation file. This indicates whether the school is in the control group or not.
 philiri_bosy_region,Phil-IRI BoSY,Phil-IRI KS3 National Dashboard_Secondary - BoSY 2025-26_Table.csv,school identifier or location,categorical,factor,Phil-IRI BoSY region name from the assessment dashboard.
 philiri_bosy_division,Phil-IRI BoSY,Phil-IRI KS3 National Dashboard_Secondary - BoSY 2025-26_Table.csv,school identifier or location,categorical,factor,Phil-IRI BoSY division name from the assessment dashboard.
 philiri_bosy_district,Phil-IRI BoSY,Phil-IRI KS3 National Dashboard_Secondary - BoSY 2025-26_Table.csv,school identifier or location,categorical,factor,Phil-IRI BoSY district name from the Phil-IRI dashboard.
