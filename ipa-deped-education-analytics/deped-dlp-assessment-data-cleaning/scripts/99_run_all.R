@@ -1,34 +1,28 @@
 # 99_run_all.R
-# Run the full DLP assessment data cleaning workflow from start to finish.
+# Run the streamlined R cleaning, scoring, and Stata-export workflow.
 
 source("scripts/00_setup.R")
-source("scripts/01_clean_dlp_randomization.R")
-source("scripts/02_clean_philiri.R")
-source("scripts/03_merge_philiri_to_dlp.R")
-source("scripts/04_clean_rma.R")
-source("scripts/05_merge_rma_to_dlp.R")
-source("scripts/06_create_scores_and_checks.R")
-source("scripts/07_create_graphs.R")
-source("scripts/08_create_codebook.R")
-source("scripts/09_create_manual_audit_files.R")
-source("scripts/10_create_final_percentage_dataset.R")
+source("scripts/01_clean_merge_data.R")
+source("scripts/02_create_scores_and_checks.R")
+source("scripts/03_export_stata_dataset.R")
 
-run_complete_log <- tibble(
-  workflow_step = c(
-    "setup",
-    "clean_dlp_randomization",
-    "clean_philiri",
-    "merge_philiri_to_dlp",
-    "clean_rma",
-    "merge_rma_to_dlp",
-    "create_scores_and_checks",
-    "create_graphs",
-    "create_codebook",
-    "create_manual_audit_files",
-    "create_final_percentage_dataset"
-  ),
-  status = "completed",
-  completed_at = as.character(Sys.time())
+run_log <- tibble(
+  completed_at = as.character(Sys.time()),
+  r_outputs_created = c(
+    "data/01_dlp_rma_philiri_school_level_full.csv",
+    "data/02_dlp_rma_philiri_school_level_percentages.csv",
+    "data/03_dlp_rma_philiri_school_level_for_stata.dta",
+    "outputs/tables/01_merge_diagnostics.csv",
+    "outputs/tables/02_philiri_score_checks.csv",
+    "outputs/tables/02_rma_score_checks.csv",
+    "outputs/validation_na_schools/01_schools_with_missing_key_fields.csv"
+  )
 )
 
-write_csv(run_complete_log, file.path(logs_dir, "run_all_completed.csv"))
+write_csv(run_log, file.path(logs_dir, "99_run_all_completed.csv"))
+
+message("R workflow complete.")
+message("Next, run these Stata do-files from the project root:")
+message("  do scripts/04_descriptive_stats.do")
+message("  do scripts/05_compliance_checks.do")
+message("  do scripts/06_visualizations.do")
