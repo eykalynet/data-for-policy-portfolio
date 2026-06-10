@@ -1,6 +1,0 @@
-audit_type,source_dataset,audit_note,records_to_review
-DLP school unmatched to assessment,Phil-IRI BoSY,DLP school did not match to the Phil-IRI BoSY file by school ID.,3
-DLP school unmatched to assessment,Phil-IRI EoSY,DLP school did not match to the Phil-IRI EoSY file by school ID.,15
-DLP school unmatched to assessment,RMA BoSY,DLP school did not match to the RMA BoSY file by school ID.,3
-DLP school unmatched to assessment,RMA EoSY,DLP school did not match to the RMA EoSY file by school ID.,2187
-assessment count discrepancy,Phil-IRI BoSY,Summed Phil-IRI reading category counts do not equal English assessed count.,22367

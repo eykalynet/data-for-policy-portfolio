@@ -1,8 +1,0 @@
-item,path
-project_root,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning
-raw_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/raw
-processed_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/processed
-tables_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/outputs/tables
-figures_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/outputs/figures
-validation_na_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/outputs/validation_na_schools
-logs_dir,/Users/esalvador/Documents/GitHub/data-for-policy-portfolio/ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/outputs/logs
