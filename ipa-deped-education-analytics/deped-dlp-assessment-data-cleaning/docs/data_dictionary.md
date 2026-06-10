@@ -1,47 +1,72 @@
 # Data Dictionary
 
-This document describes the main cleaned outputs created by the R workflow.
+This document describes the main generated outputs in the cleaned DLP assessment workflow.
 
-## Key Identifiers
-
-| Variable | Source | Description |
-|---|---|---|
-| `beis_school_id` | DLP randomization | School identifier used as the main DLP merge key. Stored as character. |
-| `school_id` | Phil-IRI and RMA | School identifier in assessment files. Stored as character. |
-| `region_code` | DLP randomization | Region code from the DLP school-level file. Stored as character. |
-| `division_code` | DLP randomization | Division code from the DLP school-level file. Stored as character. |
-| `full_division_code` | DLP randomization | Full division code from the DLP school-level file. Stored as character. |
-| `school_name` | Phil-IRI and RMA | School name from assessment files. Converted to factor in cleaned files. |
-
-## Main Processed Files
+## Final Analytic Data
 
 | File | Description |
 |---|---|
-| `processed/dlp_randomization_clean.csv` | Clean DLP base school-level file after removing rows with missing key school fields. |
-| `processed/philiri_bosy_clean.csv` | Clean Phil-IRI BoSY file. |
-| `processed/philiri_eosy_clean.csv` | Clean Phil-IRI EoSY file. |
-| `processed/rma_bosy_clean.csv` | Clean RMA BoSY file. |
-| `processed/rma_eosy_clean.csv` | Clean RMA EoSY file. |
-| `processed/dlp_with_philiri_merged.csv` | DLP file merged with Phil-IRI BoSY and EoSY. |
-| `processed/dlp_with_all_assessments_merged.csv` | DLP file merged with Phil-IRI and RMA BoSY/EoSY files. |
+| `data/01_dlp_rma_philiri_school_level_full.csv` | Full school-level DLP dataset merged with Phil-IRI and RMA BoSY/EoSY assessment columns. |
+| `data/02_dlp_rma_philiri_school_level_percentages.csv` | School-level percentage dataset with Phil-IRI reading category percentages and RMA proficiency percentages. |
+| `data/03_dlp_rma_philiri_school_level_for_stata.dta` | Stata-ready school-level file used by `04_descriptive_stats.do`, `05_compliance_checks.do`, and `06_visualizations.do`. |
+| `data/03_dlp_rma_philiri_school_level_for_stata.csv` | CSV mirror of the Stata-ready file for quick inspection. |
+
+## Key Identifiers and Grouping Variables
+
+| Variable | Source | Description |
+|---|---|---|
+| `beis_school_id` | DLP randomization | School identifier used as the main DLP merge key. |
+| `randomized_eval_id` | DLP evaluation file | Evaluation/randomization identifier when available. |
+| `rev_status` | DLP evaluation file | Review/evaluation status used as the main subgrouping variable. |
+| `rev_status_label` | Derived | Readable label for `rev_status`: `0`, `1`, or `missing`. |
+| `region_code` | DLP randomization | Region grouping. |
+| `division_code` | DLP randomization | Division grouping. |
+| `municipality_code` | DLP randomization | Municipality grouping. |
+| `full_division_code` | DLP randomization | Full division grouping used in Stata compliance outputs. |
+| `full_municipality_code` | DLP randomization | Full municipality grouping used in Stata compliance outputs. |
+
+## Assignment and Compliance Variables
+
+| Variable | Description |
+|---|---|
+| `pilot_cancel` | Randomization flag used to identify emergency assignment. |
+| `pilot_ratio` | Randomization flag used to identify mainstream assignment. |
+| `pilot_shift` | Randomization flag used to identify shifting assignment. |
+| `assignment_flag_count` | Number of assignment flags equal to 1. |
+| `assignment_group` | Derived group: `control`, `mainstream`, `shifting`, `emergency`, or `multiple flags`. |
+| `compliance` | Equals 1 when assignment and `rev_status` align with the compliance rule; equals 0 otherwise. |
+
+## Assessment Count Variables
+
+Stata variable names are compacted to fit Stata naming limits.
+
+| Pattern | Description |
+|---|---|
+| `enroll_g*_m`, `enroll_g*_f`, `enroll_g*_all` | Enrollment counts by grade and sex. |
+| `enroll_total_jhs_all` | Total junior high school enrollment. |
+| `ph_b_g*_eng_assessed` | Phil-IRI BoSY English assessed count by grade. |
+| `ph_e_g*_eng_assessed` | Phil-IRI EoSY English assessed count by grade. |
+| `rma_b_g*_assessed` | RMA BoSY assessed count by grade. |
+| `rma_e_g*_assessed` | RMA EoSY assessed count by grade. |
 
 ## Score Tables
 
 | File | Description |
 |---|---|
-| `outputs/tables/philiri_school_level_scores_long.csv` | School-grade-category Phil-IRI counts and percentages. |
-| `outputs/tables/philiri_school_level_discrepancy_checks.csv` | School-grade Phil-IRI checks comparing summed reading-level counts to English assessed counts. |
-| `outputs/tables/philiri_level_distribution_summary.csv` | Grade-level Phil-IRI distribution summary used for graphs. |
-| `outputs/tables/rma_school_level_scores_long.csv` | School-grade-proficiency RMA counts and percentages. |
-| `outputs/tables/rma_school_level_discrepancy_checks.csv` | School-grade RMA checks comparing summed proficiency counts to assessed counts. |
-| `outputs/tables/rma_proficiency_distribution_summary.csv` | Grade-level RMA distribution summary used for graphs. |
+| `outputs/tables/02_philiri_scores_long.csv` | School-grade-time-point Phil-IRI reading counts and percentages. |
+| `outputs/tables/02_philiri_score_checks.csv` | School-grade Phil-IRI checks comparing summed reading counts to assessed counts. |
+| `outputs/tables/02_rma_scores_long.csv` | School-grade-time-point RMA proficiency counts and percentages. |
+| `outputs/tables/02_rma_score_checks.csv` | School-grade RMA checks comparing summed proficiency counts to assessed counts. |
 
-## Discrepancy Variables
+## PI-Facing Stata Tables
 
-| Variable | Description |
+| File Pattern | Description |
 |---|---|
-| `summed_category_count` | Phil-IRI sum of reading category counts for a school, grade, time point, and level grouping. |
-| `summed_proficiency_count` | RMA sum of proficiency group counts for a school, grade, and time point. |
-| `discrepancy_count` | Difference between summed category/proficiency counts and assessed count. |
-| `has_discrepancy` | TRUE when summed counts do not equal the assessed count, or when the assessed count is missing. |
+| `outputs/tables/04_*` | Dataset snapshot, `rev_status` counts, enrollment/assessment totals, and proficiency summaries. |
+| `outputs/tables/05_*` | Compliance summaries at school, municipality, division, region, and assignment-group levels. |
 
+## Validation
+
+| File | Description |
+|---|---|
+| `outputs/validation_na_schools/01_schools_with_missing_key_fields.csv` | Raw rows excluded from the analytic data because one or more key school fields were missing. |

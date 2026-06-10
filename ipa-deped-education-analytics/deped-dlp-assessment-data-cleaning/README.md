@@ -1,125 +1,101 @@
-# DLP Assessment Data Cleaning Workflow
+# DLP Assessment Data Cleaning and Descriptive Statistics
 
-This folder contains a reproducible R workflow for cleaning and merging the DLP school-level randomization dataset with Philippine Informal Reading Inventory (Phil-IRI) and Rapid Mathematics Assessment (RMA) school-level assessment datasets.
+This folder contains the reproducible R and Stata workflow for the DLP school-level assessment descriptive statistics requested for PI review. Raw files stay untouched; generated analytic files are written to `data/`, and PI-facing tables, figures, logs, and validation files are written to `outputs/`.
 
 ## Folder Structure
 
-``` text
+```text
 raw/                              # Original input files. Do not edit.
-scripts/                          # R scripts, run in numbered order.
-processed/                        # Cleaned and merged datasets.
-outputs/tables/                   # CSV summaries, merge diagnostics, score checks.
-outputs/figures/                  # PNG graphs.
-outputs/validation_na_schools/    # Rows removed from analytic files because key school fields are missing.
-outputs/logs/                     # Setup and run logs.
+scripts/                          # Numbered R and Stata scripts.
+data/                             # Final analytic datasets for R/Stata handoff.
+outputs/tables/                   # Numbered CSV/XLSX summary tables.
+outputs/figures/                  # Numbered Stata figures using IPA graph scheme.
+outputs/logs/                     # Numbered R/Stata logs.
+outputs/validation_na_schools/    # Rows with missing key school fields.
 docs/                             # Data dictionary and cleaning notes.
 ```
 
 ## Raw Input Files
 
-1.  `Final_DLP_Dataset_for_Randomization.csv`
-2.  `DLP_randomized_schools_eval.csv`
-3.  `Phil-IRI KS3 National Dashboard_Secondary - BoSY 2025-26_Table.csv`
-4.  `Phil-IRI KS3 National Dashboard_Secondary - EoSY  2025-26_Table.csv`
-5.  `RMA (KS3) National Dashboard_BoSY 2025-26 Assessment Results_Table.csv`
-6.  `RMA (KS3) National Dashboard_EoSY 2025-26 Assessment Results_Table.csv`
+1. `Final_DLP_Dataset_for_Randomization.csv`
+2. `DLP_randomized_schools_eval.csv`
+3. `Phil-IRI KS3 National Dashboard_Secondary - BoSY 2025-26_Table.csv`
+4. `Phil-IRI KS3 National Dashboard_Secondary - EoSY  2025-26_Table.csv`
+5. `RMA (KS3) National Dashboard_BoSY 2025-26 Assessment Results_Table.csv`
+6. `RMA (KS3) National Dashboard_EoSY 2025-26 Assessment Results_Table.csv`
 
-## Cleaning Workflow
+## Scripts
 
-This workflow uses the following packages: `tidyverse`, `janitor`, `readr`, `stringr`, `dplyr`, and `ggplot2`.
+Run scripts from:
 
-Run scripts from the folder:
-
-``` text
+```text
 ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/
 ```
 
-The scripts are:
+The main scripts are:
 
-``` text
+```text
 scripts/00_setup.R
-scripts/01_clean_dlp_randomization.R
-scripts/02_clean_philiri.R
-scripts/03_merge_philiri_to_dlp.R
-scripts/04_clean_rma.R
-scripts/05_merge_rma_to_dlp.R
-scripts/06_create_scores_and_checks.R
-scripts/07_create_graphs.R
+scripts/01_clean_merge_data.R
+scripts/02_create_scores_and_checks.R
+scripts/03_export_stata_dataset.R
+scripts/04_descriptive_stats.do
+scripts/05_compliance_checks.do
+scripts/06_visualizations.do
 scripts/99_run_all.R
 ```
 
-## Merge Workflow
+`scripts/99_run_all.R` runs the R portion through the Stata export. Then run the Stata do-files in order:
 
-The DLP randomization file is the base school-level dataset. The main merge key is, for DLP, the `beis_school_id` variable, while for Phil-IRI/RMA, it is `school_id.` Merge diagnostics are saved in `outputs/tables/` and show matched records, unmatched records from DLP, and unmatched records from each assessment file.
+```stata
+do scripts/04_descriptive_stats.do
+do scripts/05_compliance_checks.do
+do scripts/06_visualizations.do
+```
 
-## Score Creation Workflow
+The Stata visualization script installs/uses the IPA graph scheme and sets the print font to Georgia:
 
-Phil-IRI score tables calculate Grade 7 to Grade 10 English reading category percentages against English assessed counts. The BoSY, or beginning-of-school-year, file uses 2-level and 3-level reading category columns. The EoSY, or end-of-school-year, file does not include 2-level or 3-level suffixes, so those counts are saved under both labels for consistency across outputs. Based on project guidance, EoSY `frustration` and `instructional` are treated as comparable to the below-grade reading level categories, while EoSY `independent` is treated as comparable to BoSY `grade_ready`.
+```stata
+net install github, from("https://haghish.github.io/github/")
+github install PovertyAction/ipaplots, replace
+set scheme ipaplots, perm
+graph set print fontface "Georgia"
+```
 
-RMA score tables calculate Grade 7 to Grade 10 percentages for the not proficient, low proficient, nearly proficient, proficient, and high proficient groups.
+## Final Data Outputs
 
-The compact final percentage dataset is saved in:
+```text
+data/01_dlp_rma_philiri_school_level_full.csv
+data/02_dlp_rma_philiri_school_level_percentages.csv
+data/03_dlp_rma_philiri_school_level_for_stata.dta
+data/03_dlp_rma_philiri_school_level_for_stata.csv
+```
 
-- `processed/final_school_percentage_dataset.csv`
-- `processed/final_school_percentage_dataset.rds`
-- `processed/final_school_percentage_dataset_codebook.csv`
+## PI-Facing Outputs
 
-This file keeps only DLP school IDs/evaluation metadata plus the relevant Phil-IRI and RMA percentage variables, denominators, summed category/proficiency counts, and discrepancy checks.
+The Stata scripts generate:
 
-## Validation and Discrepancy Checks
+- `outputs/tables/04_*`: overall dataset snapshot, `rev_status` subgroup counts, enrollment/assessment totals, and proficiency summaries.
+- `outputs/tables/05_*`: school, municipality, division, region, and assignment-group compliance summaries.
+- `outputs/figures/06_*`: IPA-themed PNG figures for `rev_status`, enrollment vs assessed counts, proficiency distributions, assessed counts, Phil-IRI reading categories, and compliance rates.
+- `outputs/logs/04_descriptive_stats.log`, `05_compliance_checks.log`, and `06_visualizations.log`.
 
-Rows with true `NA`, blank, or literal `"NA"` values in key school fields are removed from the main files and saved in `outputs/validation_na_schools/`.
+## Compliance Definition
 
-Discrepancy checks compare summed category or proficiency counts against assessed counts. These checks are saved in `outputs/tables/`.
+Compliance is coded in `scripts/03_export_stata_dataset.R` before export to Stata:
 
-Manual audit files are saved in `processed/`:
+- Assigned `control` and `rev_status == 0`: compliant.
+- Assigned `mainstream`, `shifting`, or `emergency` and `rev_status == 1`: compliant.
+- Otherwise: non-compliant.
 
-- `manual_audit_records.csv`
-- `manual_audit_summary.csv`
+Assignment group is derived from the randomization fields `pilot_ratio`, `pilot_shift`, and `pilot_cancel`.
 
-## Codebook
+## Validation
 
-The final merged dataset codebook is saved in:
+Rows with true `NA`, blank, or literal `"NA"` values in key school fields are excluded from the analytic file and saved to:
 
-- `docs/codebook.csv`
-- `docs/codebook.md`
+```text
+outputs/validation_na_schools/01_schools_with_missing_key_fields.csv
+```
 
-The codebook is generated by `scripts/08_create_codebook.R` from `processed/dlp_with_all_assessments_merged.rds`.
-
-## Graphs
-
-The graph script saves PNG files in `outputs/figures/`, including:
-
-- `merge_diagnostics.png`
-- `philiri_assessed_by_grade_bosy.png`
-- `philiri_assessed_by_grade_eosy.png`
-- `philiri_2level_distribution_bosy.png`
-- `philiri_2level_distribution_eosy.png`
-- `philiri_3level_distribution_bosy.png`
-- `philiri_3level_distribution_eosy.png`
-- `philiri_discrepancy_flags.png`
-- `rma_proficiency_distribution_bosy.png`
-- `rma_proficiency_distribution_eosy.png`
-- `rma_discrepancy_flags.png`
-- `philiri_assessed_start_end_sy_lines.png`
-- `philiri_reading_categories_start_end_sy_lines_faceted.png`
-- `rma_proficiency_start_end_sy_lines_faceted.png`
-- `philiri_reading_categories_by_rev_status_lines_faceted.png`
-- `philiri_discrepancy_flags_by_rev_status.png`
-- `rma_proficiency_by_rev_status_lines_faceted.png`
-- `rma_proficiency_by_rev_status_stacked_bars.png`
-- `rma_proficiency_change_by_rev_status_points.png`
-- `rma_discrepancy_flags_by_rev_status.png`
-
-## How to Run in RStudio
-
-1.  Open `deped-dlp-assessment-data-cleaning.Rproj` in RStudio.
-2.  Confirm the working directory is `ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/`.
-3.  Open `scripts/99_run_all.R`.
-4.  Click **Source** to run the full workflow.
-
-You can also run scripts one at a time in numbered order.
-
-## Data Privacy Note
-
-Raw and internal data is not committed publicly. Please contact DepEd.
+Merge diagnostics and score checks are saved as numbered files in `outputs/tables/`.
