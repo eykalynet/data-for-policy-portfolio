@@ -42,6 +42,7 @@ scripts/03_export_stata_dataset.R
 scripts/04_descriptive_stats.do
 scripts/05_compliance_checks.do
 scripts/06_visualizations.do
+scripts/07_geographic_summaries.do
 scripts/99_run_all.R
 ```
 
@@ -51,6 +52,7 @@ scripts/99_run_all.R
 do scripts/04_descriptive_stats.do
 do scripts/05_compliance_checks.do
 do scripts/06_visualizations.do
+do scripts/07_geographic_summaries.do
 ```
 
 The Stata visualization script installs/uses the IPA graph scheme and sets the print font to Georgia:
@@ -78,7 +80,11 @@ The Stata scripts generate:
 - `outputs/tables/04_*`: overall dataset snapshot, treatment status subgroup counts, enrollment/assessment totals, and proficiency summaries.
 - `outputs/tables/05_*`: school, municipality, division, region, and assignment-group compliance summaries.
 - `outputs/figures/06_*`: IPA-themed PNG figures for treatment status, enrollment vs assessed counts, proficiency distributions, assessed counts, Phil-IRI reading categories, and compliance rates.
-- `outputs/logs/04_descriptive_stats.log`, `05_compliance_checks.log`, and `06_visualizations.log`.
+- `outputs/tables/07_*`: region, division, and city/municipality summaries, including map-ready CSVs for Google Sheets or GIS joins.
+- `outputs/figures/07_*`: geographic comparison charts for treatment status, compliance, and assessment coverage.
+- `outputs/logs/04_descriptive_stats.log`, `05_compliance_checks.log`, `06_visualizations.log`, and `07_geographic_summaries.log`.
+
+The current raw files do not include latitude/longitude or boundary geometry, so the workflow does not generate a choropleth map directly. The `07_*_map_ready.csv` files are structured for joining to PSGC or other administrative boundary data if those files become available.
 
 ## Compliance Definition
 

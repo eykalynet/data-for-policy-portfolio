@@ -64,6 +64,11 @@ Stata variable names are compacted to fit Stata naming limits.
 |---|---|
 | `outputs/tables/04_*` | Dataset snapshot, treatment status counts, enrollment/assessment totals, and proficiency summaries. |
 | `outputs/tables/05_*` | Compliance summaries at school, municipality, division, region, and assignment-group levels. |
+| `outputs/tables/07_geographic_summary_region.*` | Region-level school, treatment status, enrollment, assessment coverage, and compliance summaries. |
+| `outputs/tables/07_geographic_summary_division.*` | Division-level school, treatment status, enrollment, assessment coverage, and compliance summaries. |
+| `outputs/tables/07_geographic_summary_municipality.*` | City/municipality-level school, treatment status, enrollment, assessment coverage, and compliance summaries. |
+
+The `07_*_map_ready.csv` files are CSV versions intended for Google Sheets, Google Docs tables, or joining to administrative boundary data for mapping.
 
 ## Validation
 
