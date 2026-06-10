@@ -75,17 +75,17 @@ data/03_dlp_rma_philiri_school_level_for_stata.csv
 
 The Stata scripts generate:
 
-- `outputs/tables/04_*`: overall dataset snapshot, `rev_status` subgroup counts, enrollment/assessment totals, and proficiency summaries.
+- `outputs/tables/04_*`: overall dataset snapshot, treatment status subgroup counts, enrollment/assessment totals, and proficiency summaries.
 - `outputs/tables/05_*`: school, municipality, division, region, and assignment-group compliance summaries.
-- `outputs/figures/06_*`: IPA-themed PNG figures for `rev_status`, enrollment vs assessed counts, proficiency distributions, assessed counts, Phil-IRI reading categories, and compliance rates.
+- `outputs/figures/06_*`: IPA-themed PNG figures for treatment status, enrollment vs assessed counts, proficiency distributions, assessed counts, Phil-IRI reading categories, and compliance rates.
 - `outputs/logs/04_descriptive_stats.log`, `05_compliance_checks.log`, and `06_visualizations.log`.
 
 ## Compliance Definition
 
 Compliance is coded in `scripts/03_export_stata_dataset.R` before export to Stata:
 
-- Assigned `control` and `rev_status == 0`: compliant.
-- Assigned `mainstream`, `shifting`, or `emergency` and `rev_status == 1`: compliant.
+- Assigned `control` and raw `rev_status == 0`: compliant.
+- Assigned `mainstream`, `shifting`, or `emergency` and raw `rev_status == 1`: compliant.
 - Otherwise: non-compliant.
 
 Assignment group is derived from the randomization fields `pilot_ratio`, `pilot_shift`, and `pilot_cancel`.

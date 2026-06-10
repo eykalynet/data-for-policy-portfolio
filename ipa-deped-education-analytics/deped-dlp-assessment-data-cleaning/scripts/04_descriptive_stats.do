@@ -33,17 +33,17 @@ export excel using "`table_dir'/04_overall_dataset_snapshot.xlsx", firstrow(vari
 restore
 
 preserve
-contract rev_status_label, freq(n_schools)
+contract treatment_status, freq(n_schools)
 egen total_schools = total(n_schools)
 gen pct_schools = 100 * n_schools / total_schools
-order rev_status_label n_schools pct_schools total_schools
-export excel using "`table_dir'/04_rev_status_summary.xlsx", firstrow(variables) replace
+order treatment_status n_schools pct_schools total_schools
+export excel using "`table_dir'/04_treatment_status_summary.xlsx", firstrow(variables) replace
 restore
 
 preserve
 collapse (sum) n_schools=school_row ///
     (sum) enrolled_jhs=enroll_total_jhs_all philiri_bosy_assessed philiri_eosy_assessed rma_bosy_assessed rma_eosy_assessed, ///
-    by(rev_status_label)
+    by(treatment_status)
 export excel using "`table_dir'/04_enrollment_assessment_summary.xlsx", firstrow(variables) replace
 restore
 

@@ -26,21 +26,22 @@ set scheme ipaplots, perm
 graph set window fontface "Georgia"
 graph set print fontface "Georgia"
 
+
 use "`data_dir'/03_dlp_rma_philiri_school_level_for_stata.dta", clear
 
 gen byte school_row = 1
 egen philiri_bosy_assessed = rowtotal(ph_b_g7_eng_assessed ph_b_g8_eng_assessed ph_b_g9_eng_assessed ph_b_g10_eng_assessed), missing
 egen rma_bosy_assessed = rowtotal(rma_b_g7_assessed rma_b_g8_assessed rma_b_g9_assessed rma_b_g10_assessed), missing
 
-graph bar (sum) school_row, over(rev_status_label, label(angle(30))) ///
-    title("DLP Evaluation - rev_status Distribution") ///
-    subtitle("Control, treatment, and missing evaluation status") ///
-    b1title("rev_status", size(*.8)) ///
+graph bar (sum) school_row, over(treatment_status, label(angle(30))) ///
+    title("DLP Evaluation - Treatment Status") ///
+    subtitle("Control, treatment, and missing status") ///
+    b1title("Treatment status", size(*.8)) ///
     ytitle("Number of schools", size(*.8)) ///
     ylabel(, angle(horizontal)) ///
     blabel(bar, format(%9.0f)) ///
     note("Note: Uses the cleaned school-level DLP analytic file.", size(*.7) span)
-graph export "`figure_dir'/06_rev_status_distribution.png", replace width(1800)
+graph export "`figure_dir'/06_treatment_status_distribution.png", replace width(1800)
 
 preserve
 collapse (sum) enrolled_jhs=enroll_total_jhs_all philiri_bosy_assessed rma_bosy_assessed
@@ -118,7 +119,7 @@ graph bar compliance_rate, over(assignment_group, label(angle(30))) ///
     ytitle("Compliance rate (%)", size(*.8)) ///
     ylabel(0(10)100, angle(horizontal)) ///
     blabel(bar, format(%9.1f)) ///
-    note("Note: Compliance uses assignment group and rev_status.", size(*.7) span)
+    note("Note: Compliance uses assignment group and treatment status.", size(*.7) span)
 graph export "`figure_dir'/06_compliance_rates_by_level.png", replace width(1800)
 restore
 

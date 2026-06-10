@@ -23,7 +23,7 @@ The evaluation file is:
 raw/DLP_randomized_schools_eval.csv
 ```
 
-The evaluation file is joined by `beis_school_id` to bring in `randomized_eval_id` and `rev_status`. The `rev_status` field is used as the main subgrouping variable for PI-facing descriptive statistics.
+The evaluation file is joined by `beis_school_id` to bring in `randomized_eval_id` and the raw `rev_status` field. The PI-facing descriptive statistics use a cleaner derived label, `treatment_status`, with values such as `control`, `treatment`, and `missing treatment status`.
 
 Rows are excluded from the analytic file when any of these key school fields are missing, blank, or literal `"NA"`:
 
@@ -83,10 +83,10 @@ outputs/tables/02_rma_score_checks.csv
 
 ## Compliance Rule
 
-Compliance is created before Stata export using the assignment flags and `rev_status`:
+Compliance is created before Stata export using the assignment flags and raw `rev_status`:
 
-- Assigned `control` and `rev_status == 0`: compliant.
-- Assigned `mainstream`, `shifting`, or `emergency` and `rev_status == 1`: compliant.
+- Assigned `control` and raw `rev_status == 0`: compliant.
+- Assigned `mainstream`, `shifting`, or `emergency` and raw `rev_status == 1`: compliant.
 - Otherwise: non-compliant.
 
 Assignment group is derived from:

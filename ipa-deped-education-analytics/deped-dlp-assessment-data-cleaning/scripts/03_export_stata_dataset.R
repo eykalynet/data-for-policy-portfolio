@@ -64,11 +64,11 @@ stata_dataset <- school_level_full |>
       assignment_flag_count > 1 ~ "multiple_assignment_flags",
       TRUE ~ "missing_assignment"
     ),
-    rev_status_label = case_when(
-      rev_status == "0" ~ "0 control",
-      rev_status == "1" ~ "1 treatment",
-      is.na(rev_status) ~ "missing rev_status",
-      TRUE ~ paste("rev_status", rev_status)
+    treatment_status = case_when(
+      rev_status == "0" ~ "control",
+      rev_status == "1" ~ "treatment",
+      is.na(rev_status) ~ "missing treatment status",
+      TRUE ~ paste("other status:", rev_status)
     ),
     compliance = case_when(
       assignment_group == "control" & rev_status == "0" ~ 1,

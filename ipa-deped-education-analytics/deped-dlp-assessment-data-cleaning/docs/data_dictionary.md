@@ -17,8 +17,8 @@ This document describes the main generated outputs in the cleaned DLP assessment
 |---|---|---|
 | `beis_school_id` | DLP randomization | School identifier used as the main DLP merge key. |
 | `randomized_eval_id` | DLP evaluation file | Evaluation/randomization identifier when available. |
-| `rev_status` | DLP evaluation file | Review/evaluation status used as the main subgrouping variable. |
-| `rev_status_label` | Derived | Readable label for `rev_status`: `0`, `1`, or `missing`. |
+| `rev_status` | DLP evaluation file | Raw evaluation status from the source file. |
+| `treatment_status` | Derived | PI-facing treatment status label derived from `rev_status`: `control`, `treatment`, or `missing treatment status`. |
 | `region_code` | DLP randomization | Region grouping. |
 | `division_code` | DLP randomization | Division grouping. |
 | `municipality_code` | DLP randomization | Municipality grouping. |
@@ -34,7 +34,7 @@ This document describes the main generated outputs in the cleaned DLP assessment
 | `pilot_shift` | Randomization flag used to identify shifting assignment. |
 | `assignment_flag_count` | Number of assignment flags equal to 1. |
 | `assignment_group` | Derived group: `control`, `mainstream`, `shifting`, `emergency`, or `multiple flags`. |
-| `compliance` | Equals 1 when assignment and `rev_status` align with the compliance rule; equals 0 otherwise. |
+| `compliance` | Equals 1 when assignment and raw `rev_status` align with the compliance rule; equals 0 otherwise. |
 
 ## Assessment Count Variables
 
@@ -62,7 +62,7 @@ Stata variable names are compacted to fit Stata naming limits.
 
 | File Pattern | Description |
 |---|---|
-| `outputs/tables/04_*` | Dataset snapshot, `rev_status` counts, enrollment/assessment totals, and proficiency summaries. |
+| `outputs/tables/04_*` | Dataset snapshot, treatment status counts, enrollment/assessment totals, and proficiency summaries. |
 | `outputs/tables/05_*` | Compliance summaries at school, municipality, division, region, and assignment-group levels. |
 
 ## Validation

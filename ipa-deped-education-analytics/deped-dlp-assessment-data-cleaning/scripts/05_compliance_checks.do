@@ -1,6 +1,6 @@
 *******************************************************
 * 05_compliance_checks.do
-* Compliance checks using assignment group and rev_status.
+* Compliance checks using assignment group and treatment status.
 *******************************************************
 
 version 17
@@ -19,7 +19,7 @@ log using "`log_dir'/05_compliance_checks.log", replace text
 use "`data_dir'/03_dlp_rma_philiri_school_level_for_stata.dta", clear
 
 preserve
-keep beis_school_id region_code full_division_code full_municipality_code assignment_group rev_status rev_status_label compliance
+keep beis_school_id region_code full_division_code full_municipality_code assignment_group rev_status treatment_status compliance
 export excel using "`table_dir'/05_compliance_summary_school.xlsx", firstrow(variables) replace
 restore
 
