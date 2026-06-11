@@ -1,8 +1,14 @@
-# 03_export_stata_dataset.R
-# Export the streamlined school-level analytic file for Stata.
+################################################################################
+## TITLE   : 03_export_stata_dataset.R
+## PURPOSE : Export the school-level file for Stata tables and figures.
+## PROJECT : Dynamic Learning Program descriptive results
+## AUTHOR  : Erika Salvador
+## DATE    : June 11, 2026
+################################################################################
 
 source("scripts/00_setup.R")
 
+# Load the full merged data and percentage fields created in prior scripts.
 school_level_full <- read_csv(
   file.path(data_dir, "01_dlp_rma_philiri_school_level_full.csv"),
   col_types = cols(.default = col_guess()),
@@ -35,6 +41,7 @@ percentage_dataset <- read_csv(
     full_municipality_code = as.character(full_municipality_code)
   )
 
+# Keep fields, derive assignment/compliance, and keep names Stata-safe.
 stata_dataset <- school_level_full |>
   select(
     beis_school_id,
@@ -47,7 +54,8 @@ stata_dataset <- school_level_full |>
     full_municipality_code,
     starts_with("pilot_"),
     starts_with("enroll_"),
-    matches("^(philiri|rma)_(bosy|eosy)_.*_(assessed|total_assessed|total_enrolled)$")
+    matches("^(philiri|rma)_(bosy|eosy)_.*_(assessed|total_assessed)$"),
+    contains("total_enrolled")
   ) |>
   left_join(
     percentage_dataset |>
@@ -65,10 +73,10 @@ stata_dataset <- school_level_full |>
       TRUE ~ "missing_assignment"
     ),
     treatment_status = case_when(
-      rev_status == "0" ~ "control",
-      rev_status == "1" ~ "treatment",
-      is.na(rev_status) ~ "missing treatment status",
-      TRUE ~ paste("other status:", rev_status)
+      rev_status == "0" ~ "Control",
+      rev_status == "1" ~ "Treatment",
+      is.na(rev_status) ~ "Missing Evaluation Status",
+      TRUE ~ paste("Other Status:", rev_status)
     ),
     compliance = case_when(
       assignment_group == "control" & rev_status == "0" ~ 1,
@@ -78,6 +86,7 @@ stata_dataset <- school_level_full |>
     )
   )
 
+# Shorten generated variable names to stay under Stata's 32-character limit.
 names(stata_dataset) <- names(stata_dataset) |>
   str_replace_all("^philiri_", "ph_") |>
   str_replace_all("^rma_", "rma_") |>
@@ -96,7 +105,9 @@ names(stata_dataset) <- names(stata_dataset) |>
   str_replace_all("_high_proficient_", "_high_") |>
   str_replace_all("_proficient_", "_prof_") |>
   str_replace_all("_pct_eng_assessed$", "_pct") |>
-  str_replace_all("_pct_assessed$", "_pct")
+  str_replace_all("_pct_assessed$", "_pct") |>
+  str_replace_all("_total_enrolled_g7_g10$", "_enrolled") |>
+  str_replace_all("_total_enrolled$", "_enrolled")
 
 too_long_for_stata <- names(stata_dataset)[nchar(names(stata_dataset)) > 32]
 if (length(too_long_for_stata) > 0) {

@@ -1,6 +1,6 @@
 # DLP Assessment Data Cleaning and Descriptive Statistics
 
-This folder contains the reproducible R and Stata workflow for the DLP school-level assessment descriptive statistics requested for PI review. Raw files stay untouched; generated analytic files are written to `data/`, and PI-facing tables, figures, logs, and validation files are written to `outputs/`.
+This folder contains the R and Stata scripts for the DLP school-level descriptive statistics. Raw files stay untouched; cleaned data is written to `data/`, and tables, figures, logs, and validation files are written to `outputs/`.
 
 ## Folder Structure
 
@@ -32,6 +32,8 @@ Run scripts from:
 ipa-deped-education-analytics/deped-dlp-assessment-data-cleaning/
 ```
 
+The R and Stata scripts use paths relative to the folder above. If needed, the Stata scripts also accept a `DLP_PROJECT_DIR` global pointing to this folder.
+
 The main scripts are:
 
 ```text
@@ -43,6 +45,7 @@ scripts/04_descriptive_stats.do
 scripts/05_compliance_checks.do
 scripts/06_visualizations.do
 scripts/07_geographic_summaries.do
+scripts/12_create_results_brief.py
 scripts/99_run_all.R
 ```
 
@@ -55,13 +58,20 @@ do scripts/06_visualizations.do
 do scripts/07_geographic_summaries.do
 ```
 
-The Stata visualization script installs/uses the IPA graph scheme and sets the print font to Georgia:
+Finally, rebuild the Word results brief:
+
+```bash
+python3 scripts/12_create_results_brief.py
+```
+
+The two Python document scripts use `pandas`, `openpyxl`, and `python-docx`.
+
+The Stata visualization scripts install/use the IPA graph scheme:
 
 ```stata
 net install github, from("https://haghish.github.io/github/")
 github install PovertyAction/ipaplots, replace
 set scheme ipaplots, perm
-graph set print fontface "Georgia"
 ```
 
 ## Final Data Outputs
@@ -73,18 +83,19 @@ data/03_dlp_rma_philiri_school_level_for_stata.dta
 data/03_dlp_rma_philiri_school_level_for_stata.csv
 ```
 
-## PI-Facing Outputs
+## Main Outputs
 
 The Stata scripts generate:
 
-- `outputs/tables/04_*`: overall dataset snapshot, treatment status subgroup counts, enrollment/assessment totals, and proficiency summaries.
+- `outputs/tables/04_*`: overall dataset snapshot, treatment status subgroup counts, enrollment/assessment totals, and proficiency summaries by grade, treatment status, region, and assignment group.
 - `outputs/tables/05_*`: school, municipality, division, region, and assignment-group compliance summaries.
-- `outputs/figures/06_*`: IPA-themed PNG figures for treatment status, enrollment vs assessed counts, proficiency distributions, assessed counts, Phil-IRI reading categories, and compliance rates.
+- `outputs/descriptive_results_brief.docx`: short Word brief explaining the main descriptive results.
+- `outputs/figures/individual_figures/06_*`: individual IPA-themed PNG figures for treatment status, beginning- and end-of-school-year enrollment/assessment counts, Rapid Mathematics Assessment proficiency, Philippine Informal Reading Inventory reading categories, and compliance by assignment group.
 - `outputs/tables/07_*`: region, division, and city/municipality summaries, including map-ready CSVs for Google Sheets or GIS joins.
-- `outputs/figures/07_*`: geographic comparison charts for treatment status, compliance, and assessment coverage.
+- `outputs/figures/individual_figures/07_*`: individual IPA-themed PNG figures for regional treatment status, regional compliance, division compliance, beginning- and end-of-school-year assessment coverage, and regional assessment coverage balance.
 - `outputs/logs/04_descriptive_stats.log`, `05_compliance_checks.log`, `06_visualizations.log`, and `07_geographic_summaries.log`.
 
-The current raw files do not include latitude/longitude or boundary geometry, so the workflow does not generate a choropleth map directly. The `07_*_map_ready.csv` files are structured for joining to PSGC or other administrative boundary data if those files become available.
+The current raw files do not include latitude/longitude or boundary geometry, so the workflow does not generate a choropleth map directly. The `07_*_map_ready.csv` files are structured for joining to PSGC or other administrative boundary data if those files become available. Figures use the installed `ipaplots` Stata scheme and are exported directly as PNG files.
 
 ## Compliance Definition
 

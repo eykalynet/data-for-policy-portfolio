@@ -1,8 +1,15 @@
-# 01_clean_merge_data.R
-# Clean raw DLP, Phil-IRI, and RMA files and merge them to one school-level file.
+################################################################################
+## TITLE   : 01_clean_merge_data.R
+## PURPOSE : Clean raw DLP, Phil-IRI, and RMA files and merge to school level.
+## PROJECT : Dynamic Learning Program descriptive results
+## AUTHOR  : Erika Salvador
+## DATE    : June 11, 2026
+################################################################################
 
 source("scripts/00_setup.R")
 
+# Locate expected raw files. Assessment files are matched by assessment type and
+# school-year period so minor filename spacing differences do not break the run.
 dlp_file <- file.path(raw_dir, "Final_DLP_Dataset_for_Randomization.csv")
 dlp_eval_file <- file.path(raw_dir, "DLP_randomized_schools_eval.csv")
 philiri_bosy_file <- list.files(raw_dir, pattern = "Phil-IRI.*BoSY.*\\.csv$", full.names = TRUE)
@@ -21,6 +28,8 @@ is_missing_key <- function(x) {
   is.na(x) | str_squish(as.character(x)) == "" | str_to_upper(str_squish(as.character(x))) == "NA"
 }
 
+# Use the randomized schools file as the base. The bigger DLP file only adds
+# school details, so the final data stays limited to randomized schools.
 clean_dlp <- function(dlp_raw, dlp_eval_raw) {
   dlp_clean <- dlp_raw |>
     rename(row_number_from_source_file = any_of("x1")) |>
@@ -42,12 +51,42 @@ clean_dlp <- function(dlp_raw, dlp_eval_raw) {
     mutate(
       beis_school_id = as.character(beis_school_id),
       randomized_eval_id = as.character(id),
-      rev_status = as.character(rev_status)
+      rev_status = as.character(rev_status),
+      across(
+        any_of(c(
+          "region_code",
+          "division_code",
+          "municipality_code",
+          "full_division_code",
+          "full_municipality_code"
+        )),
+        as.character
+      )
     ) |>
-    select(beis_school_id, randomized_eval_id, rev_status)
+    select(
+      beis_school_id,
+      randomized_eval_id,
+      rev_status,
+      region_code,
+      division_code,
+      municipality_code,
+      full_division_code,
+      full_municipality_code
+    )
 
-  dlp_joined <- dlp_clean |>
-    left_join(dlp_eval_clean, by = "beis_school_id") |>
+  dlp_covariates <- dlp_clean |>
+    select(
+      -any_of(c(
+        "region_code",
+        "division_code",
+        "municipality_code",
+        "full_division_code",
+        "full_municipality_code"
+      ))
+    )
+
+  dlp_joined <- dlp_eval_clean |>
+    left_join(dlp_covariates, by = "beis_school_id") |>
     mutate(
       across(
         matches("enroll|dropout|room|classroom|seat|toilet|computer|teacher|cancel|pilot"),
@@ -76,13 +115,14 @@ clean_dlp <- function(dlp_raw, dlp_eval_raw) {
         -missing_division_code,
         -missing_full_division_code,
         -has_missing_key_school_field
-      ),
+    ),
     missing = dlp_with_flags |>
       filter(has_missing_key_school_field) |>
-      mutate(source_dataset = "DLP randomization")
+      mutate(source_dataset = "DLP randomized schools evaluation")
   )
 }
 
+# Standardize assessment files and separate rows with unusable school keys.
 clean_assessment <- function(raw_data, dataset_name, geography_type) {
   id_cols <- if (geography_type == "district") {
     c("region", "division", "district", "school_id", "school_name")
@@ -122,6 +162,7 @@ philiri_eosy <- clean_assessment(philiri_eosy_raw, "Phil-IRI EoSY", "district")
 rma_bosy <- clean_assessment(rma_bosy_raw, "RMA BoSY", "municipality")
 rma_eosy <- clean_assessment(rma_eosy_raw, "RMA EoSY", "municipality")
 
+# Save excluded rows so they can be checked later.
 missing_key_rows <- bind_rows(
   dlp$missing |> mutate(across(everything(), as.character)),
   philiri_bosy$missing |> mutate(across(everything(), as.character)),
@@ -135,6 +176,7 @@ write_csv(
   file.path(validation_na_dir, "01_schools_with_missing_key_fields.csv")
 )
 
+# Count matched and unmatched schools before merging the assessment data.
 create_merge_diagnostic <- function(dlp_data, assessment_data, dataset_name) {
   tibble(
     dataset = dataset_name,
@@ -168,6 +210,7 @@ rma_bosy_for_merge <- rma_bosy$main |>
 rma_eosy_for_merge <- rma_eosy$main |>
   rename_with(~ paste0("rma_eosy_", .x), -school_id)
 
+# Keep randomized schools and attach assessment records by BEIS ID.
 school_level_full <- dlp$main |>
   left_join(philiri_bosy_for_merge, by = c("beis_school_id" = "school_id")) |>
   left_join(philiri_eosy_for_merge, by = c("beis_school_id" = "school_id")) |>

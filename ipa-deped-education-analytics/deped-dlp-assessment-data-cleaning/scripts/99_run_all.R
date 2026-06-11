@@ -1,11 +1,18 @@
-# 99_run_all.R
-# Run the streamlined R cleaning, scoring, and Stata-export workflow.
+################################################################################
+## TITLE   : 99_run_all.R
+## PURPOSE : Run the R cleaning, scoring, validation, and Stata export.
+## PROJECT : Dynamic Learning Program descriptive results
+## AUTHOR  : Erika Salvador
+## DATE    : June 11, 2026
+################################################################################
 
+# Run the R-side pipeline in dependency order. Stata scripts are run separately.
 source("scripts/00_setup.R")
 source("scripts/01_clean_merge_data.R")
 source("scripts/02_create_scores_and_checks.R")
 source("scripts/03_export_stata_dataset.R")
 
+# Write a small completion log so reruns leave a visible timestamp.
 run_log <- tibble(
   completed_at = as.character(Sys.time()),
   r_outputs_created = c(
@@ -20,10 +27,3 @@ run_log <- tibble(
 )
 
 write_csv(run_log, file.path(logs_dir, "99_run_all_completed.csv"))
-
-message("R workflow complete.")
-message("Next, run these Stata do-files from the project root:")
-message("  do scripts/04_descriptive_stats.do")
-message("  do scripts/05_compliance_checks.do")
-message("  do scripts/06_visualizations.do")
-message("  do scripts/07_geographic_summaries.do")

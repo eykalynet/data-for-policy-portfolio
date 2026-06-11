@@ -1,5 +1,10 @@
-# 00_setup.R
-# Shared setup for the DLP assessment data cleaning and Stata export workflow.
+################################################################################
+## TITLE   : 00_setup.R
+## PURPOSE : Set packages, paths, folders, and raw-file logging.
+## PROJECT : Dynamic Learning Program descriptive results
+## AUTHOR  : Erika Salvador
+## DATE    : June 11, 2026
+################################################################################
 
 library(tidyverse)
 library(janitor)
@@ -7,6 +12,7 @@ library(readr)
 library(stringr)
 library(haven)
 
+# Run this from the project folder.
 project_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
 
 raw_dir <- file.path(project_root, "raw")
@@ -19,6 +25,7 @@ logs_dir <- file.path(outputs_dir, "logs")
 validation_na_dir <- file.path(outputs_dir, "validation_na_schools")
 docs_dir <- file.path(project_root, "docs")
 
+# Make folders if they are not there yet.
 dir.create(scripts_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(outputs_dir, showWarnings = FALSE, recursive = TRUE)
@@ -28,8 +35,8 @@ dir.create(logs_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(validation_na_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(docs_dir, showWarnings = FALSE, recursive = TRUE)
 
+# Read raw CSVs with the same missing-value rules each time.
 standard_na_values <- c("", "NA", "N/A", "na", "n/a", "null", "NULL")
-
 read_raw_csv <- function(path) {
   read_csv(
     path,
@@ -41,6 +48,7 @@ read_raw_csv <- function(path) {
     mutate(across(everything(), ~ str_squish(as.character(.x))))
 }
 
+# Save a quick list of raw files found in the folder.
 raw_files <- tibble(
   raw_file_name = basename(list.files(raw_dir, full.names = TRUE)),
   raw_file_path = list.files(raw_dir, full.names = TRUE)

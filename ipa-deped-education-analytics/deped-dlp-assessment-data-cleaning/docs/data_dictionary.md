@@ -18,7 +18,7 @@ This document describes the main generated outputs in the cleaned DLP assessment
 | `beis_school_id` | DLP randomization | School identifier used as the main DLP merge key. |
 | `randomized_eval_id` | DLP evaluation file | Evaluation/randomization identifier when available. |
 | `rev_status` | DLP evaluation file | Raw evaluation status from the source file. |
-| `treatment_status` | Derived | PI-facing treatment status label derived from `rev_status`: `control`, `treatment`, or `missing treatment status`. |
+| `treatment_status` | Derived | Treatment status label from `rev_status`: `Control` when `rev_status == 0` and `Treatment` when `rev_status == 1`. |
 | `region_code` | DLP randomization | Region grouping. |
 | `division_code` | DLP randomization | Division grouping. |
 | `municipality_code` | DLP randomization | Municipality grouping. |
@@ -58,7 +58,7 @@ Stata variable names are compacted to fit Stata naming limits.
 | `outputs/tables/02_rma_scores_long.csv` | School-grade-time-point RMA proficiency counts and percentages. |
 | `outputs/tables/02_rma_score_checks.csv` | School-grade RMA checks comparing summed proficiency counts to assessed counts. |
 
-## PI-Facing Stata Tables
+## Stata Tables
 
 | File Pattern | Description |
 |---|---|
@@ -69,6 +69,8 @@ Stata variable names are compacted to fit Stata naming limits.
 | `outputs/tables/07_geographic_summary_municipality.*` | City/municipality-level school, treatment status, enrollment, assessment coverage, and compliance summaries. |
 
 The `07_*_map_ready.csv` files are CSV versions intended for Google Sheets, Google Docs tables, or joining to administrative boundary data for mapping.
+
+Figure exports are saved as PNG files.
 
 ## Validation
 

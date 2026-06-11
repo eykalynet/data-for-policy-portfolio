@@ -23,7 +23,7 @@ The evaluation file is:
 raw/DLP_randomized_schools_eval.csv
 ```
 
-The evaluation file is joined by `beis_school_id` to bring in `randomized_eval_id` and the raw `rev_status` field. The PI-facing descriptive statistics use a cleaner derived label, `treatment_status`, with values such as `control`, `treatment`, and `missing treatment status`.
+The randomized schools file is the base dataset and is joined by `beis_school_id` to the DLP school covariates and assessment files. It brings in `randomized_eval_id` and the raw `rev_status` field. The tables and figures use a cleaner label, `treatment_status`, with `Control` for `rev_status == 0` and `Treatment` for `rev_status == 1`.
 
 Rows are excluded from the analytic file when any of these key school fields are missing, blank, or literal `"NA"`:
 
@@ -115,11 +115,10 @@ scripts/06_visualizations.do
 scripts/07_geographic_summaries.do
 ```
 
-The visualization scripts use IPA graph styling and set Georgia as the print font:
+The visualization scripts use the IPA graph scheme:
 
 ```stata
 set scheme ipaplots, perm
-graph set print fontface "Georgia"
 ```
 
 The current project does not include latitude/longitude or administrative boundary geometry. `scripts/07_geographic_summaries.do` therefore creates region-, division-, and city/municipality-level tables and map-ready CSVs rather than a direct map image.

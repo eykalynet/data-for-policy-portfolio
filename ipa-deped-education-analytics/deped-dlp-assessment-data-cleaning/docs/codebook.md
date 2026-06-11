@@ -66,7 +66,7 @@ The main workflow now uses `scripts/01_clean_merge_data.R`, `scripts/02_create_s
 | `pilot_ratio` | DLP randomization | numeric | Pilot cancellation ratio from the DLP randomization file. |
 | `pilot_shift` | DLP randomization | numeric | Pilot shift measure from the DLP randomization file. |
 | `randomized_eval_id` | DLP randomized schools eval | character | School ID from the DLP randomized schools evaluation file, joined by BEIS school ID. |
-| `rev_status` | DLP randomized schools eval | factor | Raw randomization evaluation status from the DLP randomized schools evaluation file. PI-facing outputs use the derived `treatment_status` label. |
+| `rev_status` | DLP randomized schools eval | factor | Raw randomization status from the DLP randomized schools evaluation file. Outputs use the cleaner `treatment_status` label. |
 | `philiri_bosy_region` | Phil-IRI BoSY | factor | Phil-IRI BoSY region name from the assessment dashboard. |
 | `philiri_bosy_division` | Phil-IRI BoSY | factor | Phil-IRI BoSY division name from the assessment dashboard. |
 | `philiri_bosy_district` | Phil-IRI BoSY | factor | Phil-IRI BoSY district name from the Phil-IRI dashboard. |
