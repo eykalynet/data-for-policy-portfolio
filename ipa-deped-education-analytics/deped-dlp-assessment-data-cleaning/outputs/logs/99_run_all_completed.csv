@@ -1,0 +1,8 @@
+completed_at,r_outputs_created
+2026-06-11 16:01:08.495026,data/01_dlp_rma_philiri_school_level_full.csv
+2026-06-11 16:01:08.495026,data/02_dlp_rma_philiri_school_level_percentages.csv
+2026-06-11 16:01:08.495026,data/03_dlp_rma_philiri_school_level_for_stata.dta
+2026-06-11 16:01:08.495026,outputs/tables/01_merge_diagnostics.csv
+2026-06-11 16:01:08.495026,outputs/tables/02_philiri_score_checks.csv
+2026-06-11 16:01:08.495026,outputs/tables/02_rma_score_checks.csv
+2026-06-11 16:01:08.495026,outputs/validation_na_schools/01_schools_with_missing_key_fields.csv

@@ -1,0 +1,5 @@
+dataset,merge_key,dlp_rows,assessment_rows,matched_records,unmatched_records_from_dlp,unmatched_records_from_assessment
+Phil-IRI BoSY,DLP beis_school_id = assessment school_id,258,10897,258,0,10639
+Phil-IRI EoSY,DLP beis_school_id = assessment school_id,258,10870,258,0,10612
+RMA BoSY,DLP beis_school_id = assessment school_id,258,10882,258,0,10624
+RMA EoSY,DLP beis_school_id = assessment school_id,258,10852,255,3,10597
