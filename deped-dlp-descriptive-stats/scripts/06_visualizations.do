@@ -3,13 +3,9 @@
 ** PURPOSE : Create dataset, proficiency, and compliance figures.
 ** PROJECT : Dynamic Learning Program descriptive results
 ** AUTHOR  : Erika Salvador
-** REVIEWER: Alec Torralba
 ** DATE    : June 11, 2026
 ********************************************************************************
 	
-	******************Reviewer Note below***********************
-// Note below: (AT) change to global for more freedom on directory use/section runs
-
 	cls
 	clear 			all
 	macro drop 		_all 		//<-------------Since using globals
@@ -32,9 +28,6 @@ if _rc {
 gl project_dir "`project_dir'"
 
 display "$project_dir"
-
-******************Reviewer Note below***********************
-// Note below: (AT) change to global for more freedom on directory use/section runs
 
 gl data_dir "$project_dir/data"
 gl output_dir "$project_dir/outputs"
@@ -85,8 +78,6 @@ graph hbar (sum) school_row, over(treatment_status_order, label(labsize(small)))
     note("Treatment status is based on rev_status in the randomized evaluation file.", size(*.7) span)
 graph export "$individual_figure_dir/06_dataset_snapshot_treatment_status.png", replace width(2400)
 
-******************Reviewer Note below***********************
-// Note below: (AT) Changes include using abbreviation
 preserve
 * Combine enrollment and assessed-student counts for BoSY/EoSY comparison.
 quietly summarize enroll_total_jhs_all, meanonly
@@ -129,7 +120,6 @@ cap erase "$individual_figure_dir/06_dataset_snapshot_enrolled_assessed_bosy.png
 cap erase "$individual_figure_dir/06_dataset_snapshot_enrolled_assessed_eosy.png"
 restore
 
-******************Reviewer Note below***********************
 *** RMA Proficiency by grade level, BOSY and EOSY
 
 import delimited using "$table_dir/02_rma_scores_long.csv", clear varnames(1) bindquote(strict)
@@ -171,7 +161,6 @@ graph export "$individual_figure_dir/06_rma_proficiency_bosy_eosy_by_grade.png",
 cap erase "$individual_figure_dir/06_rma_proficiency_bosy_by_grade.png"
 cap erase "$individual_figure_dir/06_rma_proficiency_eosy_by_grade.png"
 
-******************Reviewer Note below***********************
 *** Assessed counts comparison on BOSY and EOSY proxy for grade ready
 *** Note: Make sure that levels are consistent: 1 independent, 2 instructional, 3 frustration for consistent reporting
 
@@ -229,7 +218,6 @@ cap erase "$individual_figure_dir/06_philiri_reading_categories_bosy_eosy_by_gra
 cap erase "$individual_figure_dir/06_philiri_reading_categories_bosy_by_grade.png"
 cap erase "$individual_figure_dir/06_philiri_reading_categories_eosy_by_grade.png"
 
-******************Reviewer Note below***********************
 *** Not proficient share by treatment (comparing treatment and control)
 
 import excel using "$table_dir/04_rma_proficiency_by_treatment_status.xlsx", firstrow clear
@@ -252,9 +240,6 @@ graph hbar percent_of_assessed1 percent_of_assessed2, over(treatment_status, lab
     legend(order(1 "Beginning of School Year" 2 "End of School Year") rows(2) size(small)) ///
     blabel(bar, format(%9.1f))
 graph export "$individual_figure_dir/06_subgroup_rma_not_proficient_by_treatment_status.png", replace width(2600)
-
-******************Reviewer Note below***********************
-// Note below: (AT) Only generate EOSY BOSY, by treatment only
 
 import excel using "$table_dir/04_rma_proficiency_by_treatment_status.xlsx", firstrow clear
 * Compact RMA subgroup figure: not proficient share by treatment status.
@@ -280,9 +265,6 @@ graph export "$individual_figure_dir/06_subgroup_rma_not_proficient_treatment_on
 
 
 
-******************Reviewer Note below***********************
-// Note below: (AT) Only generate EOSY BOSY, by treatment group
-
 import excel using "$table_dir/04_philiri_reading_by_treatment_status.xlsx", firstrow clear
 * Compact Phil-IRI subgroup figure: grade-ready/proxy share by treatment status.
 keep if reading_category == "independent"
@@ -301,9 +283,6 @@ graph hbar percent_of_classified, over(reading_measure, label(labsize(small))) o
     legend(rows(3) size(small)) ///
     blabel(bar, format(%9.1f))
 graph export "$individual_figure_dir/06_subgroup_philiri_grade_ready_by_treatment_status.png", replace width(2800)
-
-******************Reviewer Note below***********************
-// Note below: (AT) Only generate EOSY BOSY, by treatment only
 
 import excel using "$table_dir/04_philiri_reading_by_treatment_status.xlsx", firstrow clear
 * Compact Phil-IRI subgroup figure: grade-ready/proxy share by treatment status.
@@ -324,10 +303,6 @@ graph hbar percent_of_classified, over(reading_measure, label(labsize(small))) o
     legend(rows(3) size(small)) ///
     blabel(bar, format(%9.1f))
 graph export "$individual_figure_dir/06_subgroup_philiri_grade_ready_treatment_only.png", replace width(2800)
-
-******************Reviewer Note below***********************
-// Note below: (AT) Compliance rates by treatment assignment, added disclaimer
-
 
 use "$data_dir/03_dlp_rma_philiri_school_level_for_stata.dta", clear
 preserve
