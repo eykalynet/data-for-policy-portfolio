@@ -1,9 +1,9 @@
 ################################################################################
-# TITLE   : 12_create_results_brief.py
-# PURPOSE : Make a short Word brief that explains the main descriptive results.
-# PROJECT : Dynamic Learning Program descriptive results
-# AUTHOR  : Erika Salvador
-# DATE    : June 11, 2026
+## TITLE   : 12_create_results_brief.py
+## PURPOSE : Make a short Word brief that explains the main descriptive results.
+## PROJECT : Dynamic Learning Program descriptive results
+## AUTHOR  : Erika Salvador
+## DATE    : June 11, 2026
 ################################################################################
 
 from pathlib import Path
