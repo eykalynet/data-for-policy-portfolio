@@ -1,16 +1,24 @@
-###############################################################################
-# PPI append and school-level aggregation
-#
-# Flat procedural script version.
-# Source workbook: https://www.povertyindex.org/
-###############################################################################
+################################################################################
+## TITLE   : 03_ppi_school_append.R
+## PURPOSE : Append PPI scores and aggregate school-level PPI summaries.
+## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## AUTHOR  : Erika Salvador
+## DATE    : July 10, 2026
+################################################################################
 
+## This script starts from the cleaned, non-excluded records produced by
+## 02_hfc_checks.R.
 ppi_data <- hfc_results$clean_data
 
+## CHANGE HERE THROUGH 00_master.R:
+## config$school_column should identify the school field used for aggregation.
 school_column_clean <- janitor::make_clean_names(
   gsub(intToUtf8(8217), "'", trimws(config$school_column), fixed = TRUE)
 )
 
+## PPI INPUT MAPPING:
+## These survey fields are mapped to the Philippines 2023 PPI scorecard items.
+## Update this block if the questionnaire labels or response options change.
 ppi_input_columns <- setNames(
   as.list(janitor::make_clean_names(gsub(intToUtf8(8217), "'", trimws(c(
     "In which region does the household currently live?",
@@ -38,6 +46,8 @@ ppi_input_columns <- setNames(
   )
 )
 
+## PPI workbook dependency. The local file path is set in 00_master.R as
+## config$ppi_scorecard_file. Download source: https://www.povertyindex.org/
 scorecard_cells <- readxl::read_excel(
   config$ppi_scorecard_file,
   sheet = "Scorecard",
@@ -45,6 +55,7 @@ scorecard_cells <- readxl::read_excel(
   .name_repair = "minimal"
 )
 
+## Read and reshape the scorecard so each response option has a point value.
 scorecard_header <- trimws(gsub("\\s+", " ", gsub("\n", " ", as.character(unlist(scorecard_cells[4, ], use.names = FALSE)), fixed = TRUE)))
 scorecard_raw <- scorecard_cells[-seq_len(4), ]
 names(scorecard_raw) <- scorecard_header
@@ -58,6 +69,8 @@ scorecard_raw <- scorecard_raw[!is.na(scorecard_raw$response), ]
 scorecard_raw$response_clean <- trimws(gsub("\\s+", " ", gsub("[^a-z0-9]+", " ", tolower(gsub(intToUtf8(8217), "'", sub("^[A-Z]\\.\\s*", "", as.character(scorecard_raw$response)), fixed = TRUE)))))
 scorecard_raw$indicator_clean <- trimws(gsub("\\s+", " ", gsub("[^a-z0-9]+", " ", tolower(gsub(intToUtf8(8217), "'", as.character(scorecard_raw$indicator), fixed = TRUE)))))
 
+## Read the look-up table used to convert total PPI scores to poverty
+## likelihoods under each income line.
 lookup_cells <- readxl::read_excel(
   config$ppi_scorecard_file,
   sheet = "Look-up Table",
@@ -84,6 +97,9 @@ ppi_data$ppi_answered_items <- 0L
 ppi_data$ppi_missing_items <- 0L
 ppi_data$ppi_unmatched_items <- ""
 
+## Normalize survey responses to the closest scorecard response categories.
+## These mappings are the main place to tweak if real survey responses use
+## different wording from the dummy data or PPI workbook.
 region_value <- trimws(gsub("\\s+", " ", gsub("[^a-z0-9]+", " ", tolower(as.character(ppi_data[[ppi_input_columns$region]])))))
 ppi_data$ppi_response_region <- NA_character_
 ppi_data$ppi_response_region[grepl("region i|ilocos", region_value)] <- "ilocos region"
@@ -157,6 +173,8 @@ ppi_data$ppi_response_refrigerator[refrigerator_value %in% c("no", "n", "hindi")
 ppi_data$ppi_response_rice_cooker[rice_cooker_value %in% c("yes", "y", "oo")] <- "yes"
 ppi_data$ppi_response_rice_cooker[rice_cooker_value %in% c("no", "n", "hindi")] <- "no"
 
+## Score each PPI item. Missing/unmatched item responses are tracked so the
+## team can decide whether more response mappings are needed.
 ppi_response_columns <- c(
   "ppi_response_region",
   "ppi_response_household_size",
@@ -228,6 +246,8 @@ for (line in poverty_lines) {
   ppi_data[[likelihood_column]][!ppi_data$ppi_is_complete] <- NA_real_
 }
 
+## Create school identifiers and aggregate learner-level PPI results to the
+## school level. Change the parsing below if school IDs use a different format.
 school_value <- trimws(as.character(ppi_data[[school_column_clean]]))
 ppi_data$school_id_clean <- sub("^\\s*([0-9]{4,})\\b.*$", "\\1", school_value)
 ppi_data$school_id_clean[ppi_data$school_id_clean == school_value] <- NA_character_

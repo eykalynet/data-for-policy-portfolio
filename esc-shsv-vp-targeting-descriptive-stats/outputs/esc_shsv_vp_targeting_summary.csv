@@ -1,0 +1,10 @@
+"metric","value"
+"rows_checked",3
+"columns_in_input",77
+"expected_columns",77
+"missing_expected_columns",0
+"extra_columns",0
+"rows_with_fix_issues",2
+"rows_with_review_issues",1
+"rows_excluded_under_18_no_consent",1
+"total_logged_issues",6

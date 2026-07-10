@@ -1,9 +1,15 @@
-###############################################################################
-# High-frequency checks for DepEd application survey data
-#
-# Flat procedural script version.
-###############################################################################
+################################################################################
+## TITLE   : 02_hfc_checks.R
+## PURPOSE : Run high-frequency checks on the ESC-SHSV-VP survey export.
+## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## AUTHOR  : Erika Salvador
+## DATE    : July 10, 2026
+################################################################################
 
+## EXPECTED FORM STRUCTURE:
+## Update this list if the Google Form changes. The labels should match the
+## export headers as closely as possible; janitor converts them to snake_case.
+## Labels ending in " 2", " 3", etc. are branch-specific repeats from the form.
 expected_columns <- janitor::make_clean_names(gsub(intToUtf8(8217), "'", trimws(c(
   "Timestamp",
   "Email Address",
@@ -84,6 +90,9 @@ expected_columns <- janitor::make_clean_names(gsub(intToUtf8(8217), "'", trimws(
   "Date of Birth (MM/DD/YYYY)"
 )), fixed = TRUE))
 
+## REQUIRED FIELDS:
+## Tighten or relax this list depending on what the program team considers
+## necessary for targeting, PPI scoring, and respondent follow-up.
 core_required_columns <- janitor::make_clean_names(gsub(intToUtf8(8217), "'", trimws(c(
   "LAST NAME",
   "FIRST NAME",
@@ -103,18 +112,24 @@ core_required_columns <- janitor::make_clean_names(gsub(intToUtf8(8217), "'", tr
   "Date of Birth (MM/DD/YYYY)"
 )), fixed = TRUE))
 
+## Start from the loaded data and add a row_id so every issue can be traced
+## back to the original row in the export.
 hfc_data <- raw_data
 names(hfc_data) <- janitor::make_clean_names(
   gsub(intToUtf8(8217), "'", trimws(names(hfc_data)), fixed = TRUE)
 )
 hfc_data$row_id <- seq_len(nrow(hfc_data))
 
+## Trim blank strings before checking missingness. This prevents spaces from
+## being treated as valid responses.
 character_columns <- names(hfc_data)[vapply(hfc_data, is.character, logical(1))]
 for (column_name in character_columns) {
   hfc_data[[column_name]] <- trimws(as.character(hfc_data[[column_name]]))
   hfc_data[[column_name]][hfc_data[[column_name]] == ""] <- NA_character_
 }
 
+## Schema checks: missing columns usually require follow-up; extra columns may
+## be harmless if the form changed intentionally.
 missing_columns <- setdiff(expected_columns, names(hfc_data))
 extra_columns <- setdiff(names(hfc_data), c(expected_columns, "row_id"))
 
@@ -166,6 +181,8 @@ for (column_name in intersect(core_required_columns, names(hfc_data))) {
   )
 }
 
+## Core cleaning/check variables. Change these labels only if the form labels
+## change in the raw export.
 household_size_col <- janitor::make_clean_names("How many members are there in the household?")
 minors_col <- janitor::make_clean_names("How many members are under 18 years of age?")
 dob_col <- janitor::make_clean_names("Date of Birth (MM/DD/YYYY)")
@@ -175,6 +192,8 @@ lrn_col <- janitor::make_clean_names("Learner Reference Number")
 last_name_col <- janitor::make_clean_names("LAST NAME")
 first_name_col <- janitor::make_clean_names("FIRST NAME")
 
+## Numeric range checks. Thresholds are intentionally conservative; adjust
+## them if the project team expects larger household sizes.
 hfc_data$household_members_clean <- suppressWarnings(
   as.numeric(gsub("[^0-9.-]", "", as.character(hfc_data[[household_size_col]])))
 )
@@ -197,6 +216,8 @@ issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_n
 rows <- which(hfc_data$members_under_18_clean > hfc_data$household_members_clean)
 issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("under_18_exceeds_household_size", length(rows)), issue = rep("Members under 18 is greater than total household members.", length(rows)), severity = rep("fix", length(rows)), stringsAsFactors = FALSE))
 
+## Date-of-birth parsing accepts the expected MM/DD/YYYY format and a fallback
+## YYYY-MM-DD format, which sometimes appears after spreadsheet conversion.
 hfc_data$date_of_birth_clean <- suppressWarnings(as.Date(as.character(hfc_data[[dob_col]]), format = "%m/%d/%Y"))
 missing_birth_date <- is.na(hfc_data$date_of_birth_clean)
 hfc_data$date_of_birth_clean[missing_birth_date] <- suppressWarnings(
@@ -217,6 +238,8 @@ issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_n
 rows <- which(!is.na(hfc_data$respondent_age_clean) & hfc_data$respondent_age_clean > 100)
 issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("unlikely_respondent_age", length(rows)), issue = rep("Respondent age is greater than 100.", length(rows)), severity = rep("review", length(rows)), stringsAsFactors = FALSE))
 
+## Under-18 exclusion rule. Rows are excluded only when the respondent appears
+## to be under 18 and did not provide the age confirmation/consent response.
 age_consent_value <- tolower(trimws(as.character(hfc_data[[age_consent_col]])))
 hfc_data$age_consent_clean <- age_consent_value %in% c("yes", "y", "oo", "i confirm", "confirm", "true", "1") |
   grepl("confirm", age_consent_value, fixed = TRUE) |
@@ -228,8 +251,10 @@ hfc_data$hfc_exclude_under_18_no_consent <- !is.na(hfc_data$respondent_age_clean
 rows <- which(hfc_data$hfc_exclude_under_18_no_consent)
 issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("excluded_under_18_no_consent", length(rows)), issue = rep("Row excluded because respondent appears under 18 and did not confirm age/consent.", length(rows)), severity = rep("exclude", length(rows)), stringsAsFactors = FALSE))
 
+## Basic contact and duplicate checks. These are review flags, not automatic
+## exclusions, unless the row also meets the under-18 no-confirmation rule above.
 email_value <- as.character(hfc_data[[email_col]])
-rows <- which(!is.na(email_value) & !grepl("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", email_value))
+rows <- which(!is.na(email_value) & !grepl("^[^@[:space:]]+@[^@[:space:]]+\\.[^@[:space:]]+$", email_value))
 issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("invalid_email", length(rows)), issue = rep("Email address does not appear valid.", length(rows)), severity = rep("review", length(rows)), stringsAsFactors = FALSE))
 
 hfc_data$learner_reference_number_clean <- gsub("[^0-9]", "", as.character(hfc_data[[lrn_col]]))
@@ -245,6 +270,8 @@ applicant_key <- paste(toupper(hfc_data[[last_name_col]]), toupper(hfc_data[[fir
 rows <- which(!is.na(hfc_data[[last_name_col]]) & !is.na(hfc_data[[first_name_col]]) & (duplicated(applicant_key) | duplicated(applicant_key, fromLast = TRUE)))
 issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("possible_duplicate_applicant", length(rows)), issue = rep("Same respondent first name, last name, and birth date appears in more than one row.", length(rows)), severity = rep("review", length(rows)), stringsAsFactors = FALSE))
 
+## Yes/no checks. Add columns here if new binary form questions should be
+## reviewed for unexpected values.
 yes_no_columns <- janitor::make_clean_names(c(
   "Are you the household head?",
   "Does the household own a refrigerator?",
@@ -258,6 +285,7 @@ for (column_name in yes_no_columns) {
   issue_log <- rbind(issue_log, data.frame(row_id = hfc_data$row_id[rows], check_name = rep("unexpected_yes_no_value", length(rows)), issue = rep(paste("Unexpected yes/no value in", column_name), length(rows)), severity = rep("review", length(rows)), stringsAsFactors = FALSE))
 }
 
+## Build row-level flags and a compact summary for quick review.
 fix_rows <- unique(issue_log$row_id[issue_log$severity == "fix" & !is.na(issue_log$row_id)])
 review_rows <- unique(issue_log$row_id[issue_log$severity == "review" & !is.na(issue_log$row_id)])
 

@@ -1,0 +1,7 @@
+"row_id","check_name","issue","severity"
+2,"under_18_exceeds_household_size","Members under 18 is greater than total household members.","fix"
+3,"respondent_under_18","Respondent appears to be under 18.","fix"
+3,"excluded_under_18_no_consent","Row excluded because respondent appears under 18 and did not confirm age/consent.","exclude"
+2,"invalid_email","Email address does not appear valid.","review"
+2,"invalid_lrn_length","Learner Reference Number is not 12 digits after removing non-numeric characters.","fix"
+2,"unexpected_yes_no_value","Unexpected yes/no value in are_you_the_household_head","review"
