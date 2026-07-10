@@ -1,10 +1,10 @@
-# DLP Descriptive Statistics
+# DepEd DLP Descriptive Statistics
 
-This folder contains the school-level descriptive statistics workflow for the DepEd Dynamic Learning Program pilot. The scripts clean the randomized school file, merge Phil-IRI and RMA assessment summaries, create school-level indicators, and export tables, figures, and a short results brief.
+This folder contains the analysis workflow for school-level descriptive statistics from the DepEd Dynamic Learning Program pilot. The scripts prepare the randomized school file, merge Phil-IRI and RMA assessment summaries, construct school-level indicators, and produce the tables, figures, and results brief used for reporting.
 
 ## Run Order
 
-Run scripts from `deped-dlp-descriptive-stats/`.
+Run the workflow from `deped-dlp-descriptive-stats/`.
 
 ```text
 scripts/00_setup.R
@@ -18,7 +18,7 @@ scripts/07_geographic_summaries.do
 scripts/12_create_results_brief.py
 ```
 
-`scripts/99_run_all.R` runs the R portion through the Stata export. The Stata scripts use paths relative to the project folder and can also use a `DLP_PROJECT_DIR` global.
+`scripts/99_run_all.R` runs the R scripts through the Stata export. The Stata scripts use paths relative to the project folder; `DLP_PROJECT_DIR` can be set when running the do-files from another working directory.
 
 ## Main Outputs
 
@@ -34,4 +34,4 @@ outputs/figures/individual_figures/
 
 ## Notes
 
-Compliance is coded in `scripts/03_export_stata_dataset.R` by comparing treatment assignment to observed treatment status. Rows with missing key school fields are excluded from the analytic file and written to `outputs/validation_na_schools/`.
+Compliance is defined in `scripts/03_export_stata_dataset.R` by comparing treatment assignment with observed implementation status. Schools with missing key identifiers are excluded from the analytic file and logged in `outputs/validation_na_schools/`.
