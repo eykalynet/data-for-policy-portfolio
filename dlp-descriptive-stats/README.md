@@ -1,10 +1,10 @@
-# DepEd DLP Descriptive Statistics
+# DLP Descriptive Statistics
 
 This folder contains the analysis workflow for school-level descriptive statistics from the DepEd Dynamic Learning Program pilot. The scripts prepare the randomized school file, merge Phil-IRI and RMA assessment summaries, construct school-level indicators, and produce the tables, figures, and results brief used for reporting.
 
 ## Run Order
 
-Run the workflow from `deped-dlp-descriptive-stats/`.
+Run the workflow from `dlp-descriptive-stats/`.
 
 ```text
 scripts/00_setup.R
