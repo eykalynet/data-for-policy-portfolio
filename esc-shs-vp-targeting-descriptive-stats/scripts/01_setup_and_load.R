@@ -1,7 +1,7 @@
 ################################################################################
 ## TITLE   : 01_setup_and_load.R
 ## PURPOSE : Load the survey export and standardize variable names.
-## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## PROJECT : ESC-SHS-VP targeting descriptive statistics
 ## AUTHOR  : Erika Salvador
 ## DATE    : July 10, 2026
 ################################################################################

@@ -1,7 +1,7 @@
 ################################################################################
 ## TITLE   : 99_generate_dummy_data.py
-## PURPOSE : Generate a dummy ESC-SHSV-VP survey workbook for workflow testing.
-## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## PURPOSE : Generate a dummy ESC-SHS-VP survey workbook for workflow testing.
+## PROJECT : ESC-SHS-VP targeting descriptive statistics
 ## AUTHOR  : Erika Salvador
 ## DATE    : July 10, 2026
 ################################################################################
@@ -163,4 +163,4 @@ for row in rows:
 for cell in ws[1]:
     cell.style = "Headline 4"
 
-wb.save(raw_dir / "dummy_esc_shsv_vp_targeting_responses.xlsx")
+wb.save(raw_dir / "dummy_esc_shs_vp_targeting_responses.xlsx")

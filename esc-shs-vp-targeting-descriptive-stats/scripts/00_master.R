@@ -1,7 +1,7 @@
 ################################################################################
 ## TITLE   : 00_master.R
-## PURPOSE : Configure paths and run the ESC-SHSV-VP targeting workflow.
-## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## PURPOSE : Configure paths and run the ESC-SHS-VP targeting workflow.
+## PROJECT : ESC-SHS-VP targeting descriptive statistics
 ## AUTHOR  : Erika Salvador
 ## DATE    : July 10, 2026
 ################################################################################
@@ -37,11 +37,11 @@ project_dir <- sub("/scripts$", "", project_dir)
 ## - school_column: update only if the school identifier question changes.
 ## The data_dir and output_dir can usually stay as-is.
 config <- list(
-  input_file = file.path(project_dir, "raw", "dummy_esc_shsv_vp_targeting_responses.xlsx"),
+  input_file = file.path(project_dir, "raw", "dummy_esc_shs_vp_targeting_responses.xlsx"),
   data_dir = file.path(project_dir, "data"),
   output_dir = file.path(project_dir, "outputs"),
   sheet = 1,
-  export_prefix = "esc_shsv_vp_targeting",
+  export_prefix = "esc_shs_vp_targeting",
   ppi_scorecard_file = "/Users/esalvador/Downloads/Philippines 2023 PPI Scorecard and LookUp Tables - Income Lines - Final Version-2.xlsx",
   school_column = "School ID and School Name of Learner for SY 2026 - 2027"
 )

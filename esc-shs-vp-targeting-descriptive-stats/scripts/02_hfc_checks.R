@@ -1,7 +1,7 @@
 ################################################################################
 ## TITLE   : 02_hfc_checks.R
-## PURPOSE : Run high-frequency checks on the ESC-SHSV-VP survey export.
-## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## PURPOSE : Run high-frequency checks on the ESC-SHS-VP survey export.
+## PROJECT : ESC-SHS-VP targeting descriptive statistics
 ## AUTHOR  : Erika Salvador
 ## DATE    : July 10, 2026
 ################################################################################

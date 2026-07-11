@@ -1,7 +1,7 @@
 ################################################################################
 ## TITLE   : 03_ppi_school_append.R
 ## PURPOSE : Append PPI scores and aggregate school-level PPI summaries.
-## PROJECT : ESC-SHSV-VP targeting descriptive statistics
+## PROJECT : ESC-SHS-VP targeting descriptive statistics
 ## AUTHOR  : Erika Salvador
 ## DATE    : July 10, 2026
 ################################################################################
