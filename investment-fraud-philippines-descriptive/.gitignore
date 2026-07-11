@@ -1,0 +1,4 @@
+0_encrypted_data/
+2_outputs/logs/
+*.log
+.DS_Store
