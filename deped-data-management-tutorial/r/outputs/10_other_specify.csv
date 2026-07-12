@@ -1,0 +1,9 @@
+household_id,key,enumerator,interview_date,asset_main,asset_other
+HH007,uuid:000000000007,Ana,2026-06-02,99,solar lamp
+HH014,uuid:000000000014,Dina,2026-06-05,99,solar lamp
+HH021,uuid:000000000021,Ana,2026-06-04,99,solar lamp
+HH028,uuid:000000000028,Ben,2026-06-05,99,solar lamp
+HH035,uuid:000000000035,Carlo,2026-06-05,99,solar lamp
+HH042,uuid:000000000042,Carlo,2026-06-05,99,solar lamp
+HH049,uuid:000000000049,Ben,2026-06-01,99,solar lamp
+HH056,uuid:000000000056,Ben,2026-06-10,99,solar lamp

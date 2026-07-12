@@ -1,0 +1,6 @@
+household_id,key,barangay,enumerator,field_comments_id,fieldname,comment
+HH001,uuid:000000000001,South,Dina,Comments-000000000001,ppi_section/ppi_q3_has_electricity,Enumerator left a training comment for review.
+HH002,uuid:000000000002,East,Ana,Comments-000000000002,ppi_section/ppi_q3_has_electricity,Enumerator left a training comment for review.
+HH003,uuid:000000000003,East,Ben,Comments-000000000003,ppi_section/ppi_q3_has_electricity,Enumerator left a training comment for review.
+HH004,uuid:000000000004,West,Dina,Comments-000000000004,ppi_section/ppi_q3_has_electricity,Enumerator left a training comment for review.
+HH005,uuid:000000000005,West,Dina,Comments-000000000005,ppi_section/ppi_q3_has_electricity,Enumerator left a training comment for review.

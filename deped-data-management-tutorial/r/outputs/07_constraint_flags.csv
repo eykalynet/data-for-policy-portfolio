@@ -1,0 +1,4 @@
+household_id,key,enumerator,interview_date,variable,value,hard_min,hard_max
+HH018,uuid:000000000018,Ana,2026-06-10,ppi_q5_has_fridge,9,0,1
+HH031,uuid:000000000031,Dina,2026-06-01,duration_minutes,3,8,90
+HH041,uuid:000000000041,Dina,2026-06-02,duration_minutes,125,8,90

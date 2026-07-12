@@ -1,0 +1,16 @@
+variable,number_missing,percent_missing,number_unique
+ppi_q1_floor_solid,0,0,2
+ppi_q2_has_toilet,0,0,2
+ppi_q3_has_electricity,1,0.01694915254237288,2
+ppi_q4_has_tv,0,0,2
+ppi_q5_has_fridge,0,0,3
+ppi_q6_head_completed_primary,0,0,2
+ppi_q7_roof_durable,0,0,2
+ppi_q8_has_mobile_phone,0,0,2
+ppi_q9_owns_livestock,0,0,2
+ppi_q10_has_savings,0,0,2
+consent,1,0.01694915254237288,2
+hh_size,0,0,9
+children_under_15,0,0,7
+duration_minutes,0,0,29
+form_version,0,0,2

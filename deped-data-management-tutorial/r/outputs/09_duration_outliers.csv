@@ -1,0 +1,4 @@
+household_id,key,enumerator,interview_date,duration_minutes,lower_bound,upper_bound
+HH011,uuid:000000000011,Ben,2026-06-02,50,5.75,39.75
+HH041,uuid:000000000041,Dina,2026-06-02,125,-3.25,58.75
+HH043,uuid:000000000043,Ana,2026-06-09,67,4.5,48.5

@@ -1,0 +1,4 @@
+fieldname,count,mean_duration,min_duration,max_duration
+intro/consent,11,3570.909090909091,3410,3740
+ppi_section/ppi_q1_floor_solid,11,4480.909090909091,4320,4650
+ppi_section/ppi_q2_has_toilet,11,5390.909090909091,5230,5560

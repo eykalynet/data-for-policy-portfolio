@@ -1,0 +1,2 @@
+parent,child,match_type,match_text,recode_from,recode_to,new_label,records_modified
+asset_main,asset_other,exact,solar lamp,99,8,Solar lamp,8

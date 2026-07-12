@@ -1,0 +1,2 @@
+household_id,variable,value,newvalue,action,comments,status
+HH018,ppi_q5_has_fridge,9,1,replace,Training example: replace impossible PPI value.,not applied; current value is 9

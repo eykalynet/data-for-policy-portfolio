@@ -1,0 +1,12 @@
+household_id,key,enumerator,interview_date,variable,value,logic_rule,hh_size
+HH001,uuid:000000000001,Dina,2026-06-05,children_under_15,2,children_under_15 <= hh_size,1
+HH020,uuid:000000000020,Ben,2026-06-03,children_under_15,4,children_under_15 <= hh_size,1
+HH022,uuid:000000000022,Carlo,2026-06-03,children_under_15,4,children_under_15 <= hh_size,1
+HH023,uuid:000000000023,Carlo,2026-06-04,children_under_15,5,children_under_15 <= hh_size,2
+HH025,uuid:000000000025,Ana,2026-06-03,children_under_15,6,children_under_15 <= hh_size,4
+HH043,uuid:000000000043,Ana,2026-06-09,children_under_15,3,children_under_15 <= hh_size,1
+HH048,uuid:000000000048,Dina,2026-06-03,children_under_15,4,children_under_15 <= hh_size,1
+HH051,uuid:000000000051,Ben,2026-06-09,children_under_15,3,children_under_15 <= hh_size,1
+HH054,uuid:000000000054,Dina,2026-06-02,children_under_15,5,children_under_15 <= hh_size,1
+HH056,uuid:000000000056,Ben,2026-06-10,children_under_15,2,children_under_15 <= hh_size,1
+HH058,uuid:000000000058,Ben,2026-06-11,children_under_15,3,children_under_15 <= hh_size,1
