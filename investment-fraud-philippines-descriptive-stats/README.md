@@ -4,7 +4,7 @@ This folder contains a portfolio-safe descriptive statistics workflow for the In
 
 ## Run Order
 
-Run the workflow from `investment-fraud-philippines-descriptive/`.
+Run the workflow from `investment-fraud-philippines-descriptive-stats/`.
 
 ```text
 1_code/descriptive.do
